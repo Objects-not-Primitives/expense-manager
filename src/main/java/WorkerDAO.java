@@ -1,4 +1,6 @@
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class WorkerDAO {
     Connection connectWay;
@@ -39,7 +41,7 @@ public class WorkerDAO {
     public Worker selectOne (int id) throws SQLException {
         Statement stmt = connectWay.createStatement();
 
-        String sqlCommand = "SELECT * FROM weather where id = "+ id;
+        String sqlCommand = "SELECT * FROM vacancies where id = "+ id;
         ResultSet resSet = stmt.executeQuery(sqlCommand);
         while (resSet.next()){
             return new Worker (resSet.getInt("id"),resSet.getString("vacancyname"), resSet.getInt("salary"));
@@ -50,5 +52,15 @@ public class WorkerDAO {
         Statement stmt = connectWay.createStatement();
         String sqlCommand = "create table test (id int, fieldInt int, fieldString char(10))";
         stmt.execute(sqlCommand);
+    }
+    public List<Worker> selectAll () throws SQLException {
+        Statement stmt = connectWay.createStatement();
+        List<Worker> workersList = new ArrayList<Worker>();
+        String sqlCommand = "SELECT * FROM vacancies ";
+        ResultSet resSet = stmt.executeQuery(sqlCommand);
+        while (resSet.next()){
+            workersList.add( new Worker (resSet.getInt("id"),resSet.getString("vacancyname"), resSet.getInt("salary")));
+        }
+        return workersList;
     }
 }
