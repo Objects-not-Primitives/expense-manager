@@ -1,18 +1,22 @@
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Properties;
 
 public class Test {
-    public static void main(String[] args) throws SQLException {
-        Worker cleaner = new Worker(1,"cleaner", 350);
+    public static void main(String[] args) throws SQLException, IOException {
+        Properties property = new Properties();
+        property.load(new FileInputStream("src/main/resources/application.properties"));
+
+        Worker cleaner = new Worker(1, "cleaner", 350);
         WorkerDAO workerDAO = new WorkerDAO(DriverManager.getConnection(
-                "jdbc:postgresql://localhost:5432/postgres",
-                "postgres",
-                "Fynjy_0613"));
+                property.getProperty("db.url"),
+                property.getProperty("db.login"),
+                property.getProperty("db.password")));
         boolean fuckThisShit = workerDAO.connect(
-                "jdbc:postgresql://localhost:5432/postgres",
-                "postgres",
-                "Fynjy_0613");
+                property.getProperty("db.url"),
+                property.getProperty("db.login"),
+                property.getProperty("db.password"));
 
 
         workerDAO.createTable();
