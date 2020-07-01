@@ -1,1 +1,1 @@
-drop table vacancies;
+drop table Vacancies;

@@ -1,5 +1,5 @@
-create table vacancies (
+create table Vacancies (
     id int primary key,
-    vacancyname varchar (100),
+    vacancy_name varchar (100),
     salary int
 );
