@@ -4,11 +4,21 @@ import java.util.List;
 import java.util.Optional;
 
 public class WorkerDAO {
+    private static WorkerDAO instance;
     Connection connectWay;
 
 
-    public WorkerDAO(Connection connectWay) {
+
+
+    private WorkerDAO(Connection connectWay) {
         this.connectWay = connectWay;
+    }
+
+    public static WorkerDAO getInstance( Connection connectWay) {
+        if (instance == null) {
+            instance = new WorkerDAO(connectWay);
+        }
+        return instance;
     }
 
     public boolean connect (String DB_URL, String USER, String PASS){

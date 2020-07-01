@@ -10,8 +10,8 @@ public class SqlCommandLauncher {
 
         public void launchSQLscript (String sqlName) throws IOException {
 
-            Process p = Runtime.getRuntime().exec
-                    ("psql -d postgres -u postgres -f " +sqlName);
+            Process p2 = Runtime.getRuntime().exec
+                    ("psql -U postgres -f " +sqlName);
 
 
         }

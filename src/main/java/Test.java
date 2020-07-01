@@ -16,10 +16,13 @@ public class Test {
         Connection con = DriverManager.getConnection(property.getProperty("db.url"),
                 property.getProperty("db.login"),
                 property.getProperty("db.password"));
-        WorkerDAO workerDAO = new WorkerDAO(con);
-        sqlCommand.launchSQLscript("deleteTables.sql");
-        sqlCommand.launchSQLscript("createTables.sql");
-        sqlCommand.launchSQLscript("initTables.sql");
+        WorkerDAO workerDAO = WorkerDAO.getInstance(con);
+        sqlCommand.launchSQLscript("src\\main\\resources\\deleteTables.sql");
+        sqlCommand.launchSQLscript("src\\main\\resources\\createTables.sql");
+        sqlCommand.launchSQLscript("src\\main\\resources\\initTables.sql");
+
+
+
         boolean connectionTest = workerDAO.connect(
                 property.getProperty("db.url"),
                 property.getProperty("db.login"),
