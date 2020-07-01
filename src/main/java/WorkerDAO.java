@@ -33,7 +33,7 @@ public class WorkerDAO {
 
     public void updateRecord(Worker worker) throws SQLException {
         Statement stmt = connectWay.createStatement();
-        String sqlCommand = "UPDATE vacancies SET vacancyname= " + "\'" + worker.getVacancyName() + "\'" + ", salary=" + worker.getSalary() + " where id=" + worker.getId();
+        String sqlCommand = "UPDATE vacancies SET vacancy_name= " + "\'" + worker.getVacancyName() + "\'" + ", salary=" + worker.getSalary() + " where id=" + worker.getId();
         int i = stmt.executeUpdate(sqlCommand);
     }
 
@@ -56,7 +56,7 @@ public class WorkerDAO {
         String sqlCommand = "SELECT * FROM vacancies where id = " + id;
         ResultSet resSet = stmt.executeQuery(sqlCommand);
         while (resSet.next()) {
-            return Optional.of(new Worker(resSet.getInt("id"), resSet.getString("vacancyname"), resSet.getInt("salary")));
+            return Optional.of(new Worker(resSet.getInt("id"), resSet.getString("vacancy_name"), resSet.getInt("salary")));
         }
         return Optional.empty();
     }
@@ -73,7 +73,7 @@ public class WorkerDAO {
         String sqlCommand = "SELECT * FROM vacancies ";
         ResultSet resSet = stmt.executeQuery(sqlCommand);
         while (resSet.next()) {
-            workersList.add(new Worker(resSet.getInt("id"), resSet.getString("vacancyname"), resSet.getInt("salary")));
+            workersList.add(new Worker(resSet.getInt("id"), resSet.getString("vacancy_name"), resSet.getInt("salary")));
         }
         return workersList;
     }
