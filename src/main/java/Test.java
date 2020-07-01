@@ -1,3 +1,5 @@
+import org.postgresql.core.SqlCommand;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.*;
@@ -7,19 +9,25 @@ public class Test {
     public static void main(String[] args) throws SQLException, IOException {
         Properties property = new Properties();
         property.load(new FileInputStream("src/main/resources/application.properties"));
+        SqlCommandLauncher sqlCommand = new SqlCommandLauncher();
+
 
         Worker cleaner = new Worker(1, "cleaner", 350);
-        WorkerDAO workerDAO = new WorkerDAO(DriverManager.getConnection(
-                property.getProperty("db.url"),
+        Connection con = DriverManager.getConnection(property.getProperty("db.url"),
                 property.getProperty("db.login"),
-                property.getProperty("db.password")));
-        boolean fuckThisShit = workerDAO.connect(
+                property.getProperty("db.password"));
+        WorkerDAO workerDAO = new WorkerDAO(con);
+        sqlCommand.launchSQLscript("deleteTables.sql");
+        sqlCommand.launchSQLscript("createTables.sql");
+        sqlCommand.launchSQLscript("initTables.sql");
+        boolean connectionTest = workerDAO.connect(
                 property.getProperty("db.url"),
                 property.getProperty("db.login"),
                 property.getProperty("db.password"));
 
 
-        workerDAO.createTable();
+
+        //workerDAO.createTable();
 
         //Test.connectToAndQueryDatabase("postgres", "Fynjy_0613");
     }
@@ -30,7 +38,7 @@ public class Test {
                 username,
                 password);
         Statement stmt = con.createStatement();
-        Worker autist = new Worker(50,"autist");
+       /* Worker autist = new Worker(50,"autist");
         String l1 = autist.getVacancyName();
         int l2 = autist.getSalary();
         String sqlCommand = "insert into vacancy values("+"\' "+l1+"\' "+","+l2+")";
