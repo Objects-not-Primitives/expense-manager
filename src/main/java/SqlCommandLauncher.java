@@ -3,9 +3,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class SqlCommandLauncher {
-    public SqlCommandLauncher() {
-    }
-
     public void launchSQLscript(String sqlName) throws IOException {
         String line;
         Process p = Runtime.getRuntime().exec
