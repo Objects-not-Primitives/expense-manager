@@ -6,7 +6,7 @@ public class SqlCommandLauncher {
     public void launchSQLscript(String sqlName) throws IOException {
         String line;
         Process p = Runtime.getRuntime().exec
-                ("psql -U asdas_test -d asdas_play -f" + sqlName);
+                ("psql -U asdas_test -d asdas_play -f " + sqlName);
         BufferedReader input =
                 new BufferedReader
                         (new InputStreamReader(p.getInputStream()));
