@@ -13,10 +13,6 @@ public class Worker {
         this.id=id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public Worker() {
     }
 
@@ -24,15 +20,8 @@ public class Worker {
         return salary;
     }
 
-    public void setSalary(int salary) {
-        this.salary = salary;
-    }
-
     public String getVacancyName() {
         return vacancyName;
     }
 
-    public void setVacancyName(String vacancyName) {
-        this.vacancyName = vacancyName;
-    }
 }
