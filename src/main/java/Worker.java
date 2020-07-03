@@ -1,4 +1,5 @@
 public class Worker {
+
     private int salary;
     private String vacancyName;
     private int id;
@@ -23,5 +24,4 @@ public class Worker {
     public String getVacancyName() {
         return vacancyName;
     }
-
 }

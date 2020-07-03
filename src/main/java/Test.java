@@ -4,6 +4,7 @@ import java.sql.*;
 import java.util.Properties;
 
 public class Test {
+
     public static void main(String[] args) throws SQLException, IOException {
         Test test = new Test();
         Properties property = test.loadProperties();
