@@ -32,38 +32,43 @@ public class WorkerDAO {
     }
 
     public void updateRecord(Worker worker) throws SQLException {
-        Statement stmt = connectWay.createStatement();
-        String sqlCommand = "UPDATE vacancies SET vacancy_name= " + "\'" + worker.getVacancyName() + "\'" + ", salary=" + worker.getSalary() + " where id=" + worker.getId();
-        int i = stmt.executeUpdate(sqlCommand);
+        String sqlCommand = "update vacancies set vacancy_name = ?, salary = ? where id = ?";
+        PreparedStatement preparedStatement = connectWay.prepareStatement(sqlCommand);
+        preparedStatement.setString(1, worker.getVacancyName());
+        preparedStatement.setInt(2, worker.getSalary());
+        preparedStatement.setInt(3, worker.getId());
+        int i = preparedStatement.executeUpdate();
     }
 
     public void deleteRecord(Worker worker) throws SQLException {
-        Statement stmt = connectWay.createStatement();
-        String sqlCommand = "delete from vacancies where id=" + worker.getId();
-        int i = stmt.executeUpdate(sqlCommand);
+        String sqlCommand = "delete from vacancies where id = ?";
+        PreparedStatement preparedStatement = connectWay.prepareStatement(sqlCommand);
+        preparedStatement.setInt(1, worker.getId());
+        int i = preparedStatement.executeUpdate();
     }
 
     public void insertRecord(Worker worker) throws SQLException {
-
-        Statement stmt = connectWay.createStatement();
-        String sqlCommand = "insert into vacancies values(" + worker.getId() + ", \'" + worker.getVacancyName() + "\'," + worker.getSalary() + ")";
-        int i = stmt.executeUpdate(sqlCommand);
+        String sqlCommand = "insert into vacancies values (?,?,?)";
+        PreparedStatement preparedStatement = connectWay.prepareStatement(sqlCommand);
+        preparedStatement.setInt(1, worker.getId());
+        preparedStatement.setString(2, worker.getVacancyName());
+        preparedStatement.setInt(3, worker.getSalary());
+        int i = preparedStatement.executeUpdate();
     }
 
     public Optional<Worker> selectOne(int id) throws SQLException {
-        Statement stmt = connectWay.createStatement();
-
-        String sqlCommand = "SELECT * FROM vacancies where id = " + id;
-        ResultSet resSet = stmt.executeQuery(sqlCommand);
-        while (resSet.next()) {
-            return Optional.of(new Worker(resSet.getInt("id"), resSet.getString("vacancy_name"), resSet.getInt("salary")));
+        PreparedStatement preparedStatement = connectWay.prepareStatement("SELECT * FROM vacancies where id = ?");
+        preparedStatement.setInt(1, id);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while (resultSet.next()) {
+            return Optional.of(new Worker(resultSet.getInt("id"), resultSet.getString("vacancy_name"), resultSet.getInt("salary")));
         }
         return Optional.empty();
     }
 
     public void createTable() throws SQLException {
         Statement stmt = connectWay.createStatement();
-        String sqlCommand = "create table test (id int, fieldInt int, fieldString char(10))";
+        String sqlCommand = "create table vacancies_new (id int primary key, vacancy_name char(100), salary int )";
         stmt.execute(sqlCommand);
     }
 
