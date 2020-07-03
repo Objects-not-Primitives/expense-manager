@@ -61,7 +61,7 @@ public class WorkerDAO {
         PreparedStatement preparedStatement = connectWay.prepareStatement("SELECT * FROM vacancies where id = ?");
         preparedStatement.setInt(1, id);
         ResultSet resultSet = preparedStatement.executeQuery();
-        while (resultSet.next()) {
+        if (resultSet.next()) {
             return Optional.of(new Worker(resultSet.getInt("id"), resultSet.getString("vacancy_name"), resultSet.getInt("salary")));
         }
         return Optional.empty();
