@@ -67,12 +67,6 @@ public class WorkerDAO {
         return Optional.empty();
     }
 
-    public void createTable() throws SQLException {
-        Statement stmt = connectWay.createStatement();
-        String sqlCommand = "create table vacancies_new (id int primary key, vacancy_name char(100), salary int )";
-        stmt.execute(sqlCommand);
-    }
-
     public List<Worker> selectAll() throws SQLException {
         Statement stmt = connectWay.createStatement();
         List<Worker> workersList = new ArrayList<Worker>();
