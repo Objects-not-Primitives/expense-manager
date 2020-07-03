@@ -5,7 +5,7 @@ import java.util.Optional;
 
 public class WorkerDAO {
     private static WorkerDAO instance;
-    Connection connectWay;
+    private Connection connectWay;
 
     private WorkerDAO(Connection connectWay) {
         this.connectWay = connectWay;

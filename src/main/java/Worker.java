@@ -1,7 +1,7 @@
 public class Worker {
-    int salary;
-    String vacancyName;
-    int id;
+    private int salary;
+    private String vacancyName;
+    private int id;
 
     public int getId() {
         return id;
@@ -10,7 +10,7 @@ public class Worker {
     public Worker(int id, String vacancyName, int salary) {
         this.salary = salary;
         this.vacancyName = vacancyName;
-        this.id=id;
+        this.id = id;
     }
 
     public Worker() {
