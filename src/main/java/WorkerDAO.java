@@ -41,10 +41,10 @@ public class WorkerDAO {
         int i = preparedStatement.executeUpdate();
     }
 
-    public void deleteRecord(Worker worker) throws SQLException {
+    public void deleteRecord(int workerId) throws SQLException {
         String sqlCommand = "delete from vacancies where id = ?";
         PreparedStatement preparedStatement = connectWay.prepareStatement(sqlCommand);
-        preparedStatement.setInt(1, worker.getId());
+        preparedStatement.setInt(1, workerId);
         int i = preparedStatement.executeUpdate();
     }
 
