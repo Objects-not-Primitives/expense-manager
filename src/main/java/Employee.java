@@ -1,4 +1,4 @@
-public class Worker {
+public class Employee {
 
     private int salary;
     private String vacancyName;
@@ -8,13 +8,13 @@ public class Worker {
         return id;
     }
 
-    public Worker(int id, String vacancyName, int salary) {
+    public Employee(int id, String vacancyName, int salary) {
         this.salary = salary;
         this.vacancyName = vacancyName;
         this.id = id;
     }
 
-    public Worker() {
+    public Employee() {
     }
 
     public int getSalary() {
