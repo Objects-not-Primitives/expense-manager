@@ -41,10 +41,10 @@ public class EmployeeDAO {
         int i = preparedStatement.executeUpdate();
     }
 
-    public void deleteRecord(Employee employee) throws SQLException {
+    public void deleteRecord(int employeeId) throws SQLException {
         String sqlCommand = "delete from employees where id = ?";
         PreparedStatement preparedStatement = connectWay.prepareStatement(sqlCommand);
-        preparedStatement.setInt(1, employee.getId());
+        preparedStatement.setInt(1, employeeId);
         int i = preparedStatement.executeUpdate();
     }
 
@@ -61,16 +61,10 @@ public class EmployeeDAO {
         PreparedStatement preparedStatement = connectWay.prepareStatement("SELECT * FROM employees where id = ?");
         preparedStatement.setInt(1, id);
         ResultSet resultSet = preparedStatement.executeQuery();
-        while (resultSet.next()) {
+        if (resultSet.next()) {
             return Optional.of(new Employee(resultSet.getInt("id"), resultSet.getString("vacancy_name"), resultSet.getInt("salary")));
         }
         return Optional.empty();
-    }
-
-    public void createTable() throws SQLException {
-        Statement stmt = connectWay.createStatement();
-        String sqlCommand = "create table employees_new (id int primary key, vacancy_name char(100), salary int )";
-        stmt.execute(sqlCommand);
     }
 
     public List<Employee> selectAll() throws SQLException {
