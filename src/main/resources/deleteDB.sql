@@ -1,1 +1,1 @@
-drop table Employees;
+drop table Employee;
