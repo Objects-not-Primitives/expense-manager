@@ -33,7 +33,7 @@ public class EmployeeDAO {
     }
 
     public void updateRecord(Employee employee) throws SQLException {
-        String sqlCommand = "update employees set vacancy_name = ?, salary = ? where id = ?";
+        String sqlCommand = "update employee set vacancy_name = ?, salary = ? where id = ?";
         PreparedStatement preparedStatement = connectWay.prepareStatement(sqlCommand);
         preparedStatement.setString(1, employee.getVacancyName());
         preparedStatement.setInt(2, employee.getSalary());
@@ -42,14 +42,14 @@ public class EmployeeDAO {
     }
 
     public void deleteRecord(int employeeId) throws SQLException {
-        String sqlCommand = "delete from employees where id = ?";
+        String sqlCommand = "delete from employee where id = ?";
         PreparedStatement preparedStatement = connectWay.prepareStatement(sqlCommand);
         preparedStatement.setInt(1, employeeId);
         int i = preparedStatement.executeUpdate();
     }
 
     public void insertRecord(Employee employee) throws SQLException {
-        String sqlCommand = "insert into employees values (?,?,?)";
+        String sqlCommand = "insert into employee values (?,?,?)";
         PreparedStatement preparedStatement = connectWay.prepareStatement(sqlCommand);
         preparedStatement.setInt(1, employee.getId());
         preparedStatement.setString(2, employee.getVacancyName());
@@ -58,7 +58,7 @@ public class EmployeeDAO {
     }
 
     public Optional<Employee> selectOne(int id) throws SQLException {
-        PreparedStatement preparedStatement = connectWay.prepareStatement("SELECT * FROM employees where id = ?");
+        PreparedStatement preparedStatement = connectWay.prepareStatement("SELECT * FROM employee where id = ?");
         preparedStatement.setInt(1, id);
         ResultSet resultSet = preparedStatement.executeQuery();
         if (resultSet.next()) {
@@ -70,7 +70,7 @@ public class EmployeeDAO {
     public List<Employee> selectAll() throws SQLException {
         Statement stmt = connectWay.createStatement();
         List<Employee> employeesList = new ArrayList<Employee>();
-        String sqlCommand = "SELECT * FROM employees ";
+        String sqlCommand = "SELECT * FROM employee ";
         ResultSet resSet = stmt.executeQuery(sqlCommand);
         while (resSet.next()) {
             employeesList.add(new Employee(resSet.getInt("id"), resSet.getString("vacancy_name"), resSet.getInt("salary")));
