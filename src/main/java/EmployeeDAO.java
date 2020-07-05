@@ -2,6 +2,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Properties;
 
 public class EmployeeDAO {
 
@@ -12,11 +13,19 @@ public class EmployeeDAO {
         this.connectWay = connectWay;
     }
 
-    public static EmployeeDAO getInstance(Connection connectWay) {
+    public static EmployeeDAO getInstance(Properties dbProperties) throws SQLException {
+
         if (instance == null) {
-            instance = new EmployeeDAO(connectWay);
+            instance = new EmployeeDAO(connect(dbProperties));
         }
         return instance;
+    }
+
+    public static Connection connect(Properties dbProperties) throws SQLException {
+        return DriverManager.getConnection(
+                dbProperties.getProperty("db.url"),
+                dbProperties.getProperty("db.login"),
+                dbProperties.getProperty("db.password"));
     }
 
     public boolean connect(String DB_URL, String USER, String PASS) {

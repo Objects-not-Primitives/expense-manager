@@ -14,9 +14,6 @@ public class Employee {
         this.id = id;
     }
 
-    public Employee() {
-    }
-
     public int getSalary() {
         return salary;
     }
@@ -24,4 +21,24 @@ public class Employee {
     public String getVacancyName() {
         return vacancyName;
     }
+
+    @Override
+
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+
+        Employee employee = (Employee) obj;
+        return salary == employee.salary &&
+                id == employee.id &&
+                vacancyName.equals(employee.vacancyName);
+    }
+
 }
