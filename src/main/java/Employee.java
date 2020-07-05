@@ -4,14 +4,14 @@ public class Employee {
     private String vacancyName;
     private int id;
 
-    public int getId() {
-        return id;
+    public Employee(int id, String vacancyName, int salary) {
+        this.id = id;
+        this.vacancyName = vacancyName;
+        this.salary = salary;
     }
 
-    public Employee(int id, String vacancyName, int salary) {
-        this.salary = salary;
-        this.vacancyName = vacancyName;
-        this.id = id;
+    public int getId() {
+        return id;
     }
 
     public int getSalary() {
@@ -23,22 +23,18 @@ public class Employee {
     }
 
     @Override
-
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;
         }
 
-
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-
 
         Employee employee = (Employee) obj;
         return salary == employee.salary &&
                 id == employee.id &&
                 vacancyName.equals(employee.vacancyName);
     }
-
 }
