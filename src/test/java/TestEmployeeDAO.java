@@ -5,15 +5,14 @@ import java.util.List;
 import java.util.Properties;
 
 public class TestEmployeeDAO {
+    private static final String propertiesPath = "src\\main\\resources\\application.properties";
 
     public static void main(String[] args) throws SQLException, IOException {
-        System.out.println(testConnect());
-        execScripts();
-        System.out.println(testDAO());
+        System.out.println(testConnect() + ", " + testDAO());
     }
 
     private static boolean testDAO() throws SQLException, IOException {
-        String propertiesPath = "src\\main\\resources\\application.properties";
+        execScripts();
         Properties property = PropertyLoader.loadProperties(propertiesPath);
         EmployeeDAO employeeDAO = EmployeeDAO.getInstance(property);
 
@@ -42,7 +41,6 @@ public class TestEmployeeDAO {
     }
 
     private static boolean testConnect() throws IOException, SQLException {
-        String propertiesPath = "src\\main\\resources\\application.properties";
         Properties property = PropertyLoader.loadProperties(propertiesPath);
         EmployeeDAO employeeDAO = EmployeeDAO.getInstance(property);
         return employeeDAO.connect(

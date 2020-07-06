@@ -1,8 +1,8 @@
 public class Employee {
 
-    private int salary;
-    private String vacancyName;
     private int id;
+    private String vacancyName;
+    private int salary;
 
     public Employee(int id, String vacancyName, int salary) {
         this.id = id;
