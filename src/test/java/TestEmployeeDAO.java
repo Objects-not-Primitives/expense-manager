@@ -45,14 +45,15 @@ public class TestEmployeeDAO {
 
     private static void execScripts() throws IOException {
         SqlCommandLauncher sqlCommand = new SqlCommandLauncher();
-        sqlCommand.launchSQLscript(deleteDBPath);
-        sqlCommand.launchSQLscript(createDBPath);
+        sqlCommand.launchSQLscript(deleteDBPath, propertiesPath);
+        sqlCommand.launchSQLscript(createDBPath, propertiesPath);
     }
 
     private static boolean testConnect() throws IOException {
         Properties property = PropertyLoader.load(propertiesPath);
         try {
-            EmployeeDAO.connect(property);
+            Connection con = EmployeeDAO.connect(property);
+            con.close();
             System.out.println("Подключение к БД установлено");
             return true;
         } catch (Exception e) {

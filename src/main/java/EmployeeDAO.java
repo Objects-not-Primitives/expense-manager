@@ -35,6 +35,7 @@ public class EmployeeDAO {
         preparedStatement.setInt(2, employee.getSalary());
         preparedStatement.setInt(3, employee.getId());
         int i = preparedStatement.executeUpdate();
+        preparedStatement.close();
     }
 
     public void deleteRecord(int employeeId) throws SQLException {
@@ -42,6 +43,7 @@ public class EmployeeDAO {
         PreparedStatement preparedStatement = connectWay.prepareStatement(sqlCommand);
         preparedStatement.setInt(1, employeeId);
         int i = preparedStatement.executeUpdate();
+        preparedStatement.close();
     }
 
     public void insertRecord(Employee employee) throws SQLException {
@@ -51,6 +53,7 @@ public class EmployeeDAO {
         preparedStatement.setString(2, employee.getVacancyName());
         preparedStatement.setInt(3, employee.getSalary());
         int i = preparedStatement.executeUpdate();
+        preparedStatement.close();
     }
 
     public Optional<Employee> selectOne(int id) throws SQLException {
@@ -58,8 +61,11 @@ public class EmployeeDAO {
         preparedStatement.setInt(1, id);
         ResultSet resultSet = preparedStatement.executeQuery();
         if (resultSet.next()) {
-            return Optional.of(new Employee(resultSet.getInt("id"), resultSet.getString("vacancy_name"), resultSet.getInt("salary")));
+            Optional<Employee> opt = Optional.of(new Employee(resultSet.getInt("id"), resultSet.getString("vacancy_name"), resultSet.getInt("salary")));
+            preparedStatement.close();
+            return opt;
         }
+        preparedStatement.close();
         return Optional.empty();
     }
 
@@ -71,6 +77,7 @@ public class EmployeeDAO {
         while (resSet.next()) {
             employeesList.add(new Employee(resSet.getInt("id"), resSet.getString("vacancy_name"), resSet.getInt("salary")));
         }
+        stmt.close();
         return employeesList;
     }
 }
