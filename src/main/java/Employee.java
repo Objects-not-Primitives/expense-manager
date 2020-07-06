@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 public class Employee {
 
     private int id;
@@ -23,23 +25,17 @@ public class Employee {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-
-        Employee employee = (Employee) obj;
-        return salary == employee.salary &&
-                id == employee.id &&
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Employee employee = (Employee) o;
+        return id == employee.id &&
+                salary == employee.salary &&
                 vacancyName.equals(employee.vacancyName);
     }
 
     @Override
     public int hashCode() {
-        return id;
+        return Objects.hash(id, vacancyName, salary);
     }
 }
