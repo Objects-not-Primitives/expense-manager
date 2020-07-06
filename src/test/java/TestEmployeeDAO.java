@@ -10,12 +10,13 @@ public class TestEmployeeDAO {
     private static final String createDBPath = "src\\main\\resources\\createDB.sql";
 
     public static void main(String[] args) throws SQLException, IOException {
-        System.out.println(testConnect() + ", " + testDAO());
+        testConnect();
+        testDAO();
     }
 
     private static boolean testDAO() throws SQLException, IOException {
         execScripts();
-        Properties property = PropertyLoader.loadProperties(propertiesPath);
+        Properties property = PropertyLoader.load(propertiesPath);
         EmployeeDAO employeeDAO = EmployeeDAO.getInstance(property);
 
         Employee testEmployee1 = new Employee(1, "boss", 250000);
@@ -33,7 +34,13 @@ public class TestEmployeeDAO {
         employeeDAO.deleteRecord(testEmployee3deleted.getId());
 
         List<Employee> testEmployeeListDB = employeeDAO.selectAll();
-        return testEmployeeList.get(0).equals(employeeDAO.selectOne(1).get()) && testEmployeeList.equals(testEmployeeListDB);
+        if (testEmployeeList.get(0).equals(employeeDAO.selectOne(1).get()) && testEmployeeList.equals(testEmployeeListDB)) {
+            System.out.println("Методы DAO работают нормально");
+            return true;
+        } else {
+            System.out.println("Методы DAO не работают");
+            return false;
+        }
     }
 
     private static void execScripts() throws IOException {
@@ -43,12 +50,14 @@ public class TestEmployeeDAO {
     }
 
     private static boolean testConnect() throws IOException {
-        Properties property = PropertyLoader.loadProperties(propertiesPath);
+        Properties property = PropertyLoader.load(propertiesPath);
         try {
             EmployeeDAO.connect(property);
+            System.out.println("Подключение к БД установлено");
             return true;
         } catch (Exception e) {
             e.printStackTrace();
+            System.out.println("Подключение к БД отсутствует");
             return false;
         }
     }
