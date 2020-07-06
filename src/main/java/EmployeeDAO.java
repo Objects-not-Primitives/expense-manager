@@ -28,16 +28,6 @@ public class EmployeeDAO {
                 dbProperties.getProperty("db.password"));
     }
 
-    public boolean connect(String DB_URL, String USER, String PASS) {
-        try {
-            Connection connection = DriverManager.getConnection(DB_URL, USER, PASS);
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
     public void updateRecord(Employee employee) throws SQLException {
         String sqlCommand = "update employee set vacancy_name = ?, salary = ? where id = ?";
         PreparedStatement preparedStatement = connectWay.prepareStatement(sqlCommand);

@@ -6,6 +6,8 @@ import java.util.Properties;
 
 public class TestEmployeeDAO {
     private static final String propertiesPath = "src\\main\\resources\\application.properties";
+    private static final String deleteDBPath = "src\\main\\resources\\deleteDB.sql";
+    private static final String createDBPath = "src\\main\\resources\\createDB.sql";
 
     public static void main(String[] args) throws SQLException, IOException {
         System.out.println(testConnect() + ", " + testDAO());
@@ -36,17 +38,18 @@ public class TestEmployeeDAO {
 
     private static void execScripts() throws IOException {
         SqlCommandLauncher sqlCommand = new SqlCommandLauncher();
-        sqlCommand.launchSQLscript("src\\main\\resources\\deleteDB.sql");
-        sqlCommand.launchSQLscript("src\\main\\resources\\createDB.sql");
+        sqlCommand.launchSQLscript(deleteDBPath);
+        sqlCommand.launchSQLscript(createDBPath);
     }
 
-    private static boolean testConnect() throws IOException, SQLException {
+    private static boolean testConnect() throws IOException {
         Properties property = PropertyLoader.loadProperties(propertiesPath);
-        EmployeeDAO employeeDAO = EmployeeDAO.getInstance(property);
-        return employeeDAO.connect(
-                property.getProperty("db.url"),
-                property.getProperty("db.login"),
-                property.getProperty("db.password"));
+        try {
+            EmployeeDAO.connect(property);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
-
 }
