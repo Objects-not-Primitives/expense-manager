@@ -14,9 +14,9 @@ public class EmployeeDAO {
     }
 
     public static EmployeeDAO getInstance(Properties dbProperties) throws SQLException {
-
         if (instance == null) {
-            instance = new EmployeeDAO(connect(dbProperties));
+            Connection connection = connect(dbProperties);
+            instance = new EmployeeDAO(connection);
         }
         return instance;
     }
@@ -30,10 +30,7 @@ public class EmployeeDAO {
 
     public boolean connect(String DB_URL, String USER, String PASS) {
         try {
-            Connection con = DriverManager.getConnection(
-                    DB_URL,
-                    USER,
-                    PASS);
+            Connection connection = DriverManager.getConnection(DB_URL, USER, PASS);
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
