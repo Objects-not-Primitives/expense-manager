@@ -25,6 +25,4 @@ public class TestEmployeeEquals {
                     + expectedSize + " but actually is " + employeeSet.size());
         }
     }
-
-
 }

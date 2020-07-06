@@ -37,4 +37,9 @@ public class Employee {
                 id == employee.id &&
                 vacancyName.equals(employee.vacancyName);
     }
+
+    @Override
+    public int hashCode() {
+        return id;
+    }
 }
