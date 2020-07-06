@@ -44,9 +44,10 @@ public class TestEmployeeDAO {
     }
 
     private static void execScripts() throws IOException {
-        SqlCommandLauncher sqlCommand = new SqlCommandLauncher();
-        sqlCommand.launchSQLscript(deleteDBPath, propertiesPath);
-        sqlCommand.launchSQLscript(createDBPath, propertiesPath);
+        Properties properties = PropertyLoader.load(propertiesPath);
+        ScriptExecutor scriptExecutor = new ScriptExecutor();
+        scriptExecutor.executeSQL(deleteDBPath, properties);
+        scriptExecutor.executeSQL(createDBPath, properties);
     }
 
     private static boolean testConnect() throws IOException {
