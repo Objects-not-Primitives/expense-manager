@@ -14,11 +14,12 @@ public class ScriptExecutor {
 
     private void writeLogs(Process process) throws IOException {
         String log;
-        BufferedReader logStream = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        while ((log = logStream.readLine()) != null) {
-            System.out.println(log);
+        try (BufferedReader logStream = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+            while ((log = logStream.readLine()) != null) {
+                System.out.println(log);
+            }
         }
-        logStream.close();
+
     }
 }
 

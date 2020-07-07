@@ -52,9 +52,7 @@ public class TestEmployeeDAO {
 
     private static boolean testConnect() throws IOException {
         Properties property = PropertyLoader.load(propertiesPath);
-        try {
-            Connection con = EmployeeDAO.connect(property);
-            con.close();
+        try(Connection con = EmployeeDAO.connect(property)) {
             System.out.println("Подключение к БД установлено");
             return true;
         } catch (Exception e) {
