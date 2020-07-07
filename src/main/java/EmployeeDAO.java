@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
-public class EmployeeDAO {
+public class EmployeeDAO implements AutoCloseable {
 
     private static EmployeeDAO instance;
     private Connection connectWay;
@@ -71,7 +71,7 @@ public class EmployeeDAO {
 
     public List<Employee> selectAll() throws SQLException {
         try (Statement stmt = connectWay.createStatement()) {
-            List<Employee> employeesList = new ArrayList<Employee>();
+            List<Employee> employeesList = new ArrayList<>();
             String sqlCommand = "SELECT * FROM employee ";
             ResultSet resSet = stmt.executeQuery(sqlCommand);
             while (resSet.next()) {
@@ -79,5 +79,10 @@ public class EmployeeDAO {
             }
             return employeesList;
         }
+    }
+
+    @Override
+    public void close() throws SQLException {
+        connectWay.close();
     }
 }
