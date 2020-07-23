@@ -11,6 +11,7 @@ public class Employee {
         this.vacancyName = vacancyName;
         this.salary = salary;
     }
+    public Employee(){}
 
     public int getId() {
         return id;
