@@ -1,4 +1,3 @@
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -7,9 +6,8 @@ public class PropertyLoader {
 
     public static Properties load(String propertiesPath) throws IOException {
         Properties property = new Properties();
-        InputStream input = new FileInputStream(propertiesPath);
+        InputStream input = PropertyLoader.class.getClassLoader().getResourceAsStream(propertiesPath);
         property.load(input);
-        input.close();
         return property;
     }
 }

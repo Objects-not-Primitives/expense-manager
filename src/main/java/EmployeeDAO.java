@@ -13,7 +13,7 @@ public class EmployeeDAO implements AutoCloseable {
         this.connectWay = connectWay;
     }
 
-    public static EmployeeDAO getInstance(Properties dbProperties) throws SQLException {
+    public static EmployeeDAO getInstance(Properties dbProperties) throws SQLException{
         if (instance == null) {
             Connection connection = connect(dbProperties);
             instance = new EmployeeDAO(connection);
@@ -21,7 +21,12 @@ public class EmployeeDAO implements AutoCloseable {
         return instance;
     }
 
-    public static Connection connect(Properties dbProperties) throws SQLException {
+    public static Connection connect(Properties dbProperties) throws SQLException{
+        try{
+            Class.forName("org.postgresql.Driver");
+        }catch (ClassNotFoundException e){
+            e.printStackTrace();
+        }
         return DriverManager.getConnection(
                 dbProperties.getProperty("db.url"),
                 dbProperties.getProperty("db.login"),

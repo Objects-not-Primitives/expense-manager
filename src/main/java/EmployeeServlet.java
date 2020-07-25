@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 @WebServlet(urlPatterns = {"/first-servlet/*"})
 public class EmployeeServlet extends HttpServlet {
-    private static final String propertiesPath = "src\\main\\resources\\application.properties";
+    private static final String propertiesPath = "application.properties";
 
     public void init(ServletConfig servletConfig) throws ServletException {
         super.init(servletConfig);

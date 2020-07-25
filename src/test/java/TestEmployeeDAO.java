@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Properties;
 
 public class TestEmployeeDAO {
-    private static final String propertiesPath = "src\\main\\resources\\application.properties";
+    private static final String propertiesPath = "application.properties";
     private static final String deleteDBPath = "src\\main\\resources\\deleteDB.sql";
     private static final String createDBPath = "src\\main\\resources\\createDB.sql";
 
