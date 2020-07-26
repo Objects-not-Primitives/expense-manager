@@ -1,48 +1,37 @@
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Properties;
 import java.util.stream.Collectors;
 
 @WebServlet(urlPatterns = {"/first-servlet/*"})
 public class EmployeeServlet extends HttpServlet {
-    private static final String propertiesPath = "application.properties";
-
-    public void init(ServletConfig servletConfig) throws ServletException {
-        super.init(servletConfig);
-    }
-
-    private static EmployeeDAO addEmployeeDao() throws IOException, SQLException {
-        Properties property = PropertyLoader.load(propertiesPath);
-        return EmployeeDAO.getInstance(property);
-    }
+    private static final EmployeeService employeeService = new EmployeeService();
+    private static final ObjectMapper mapper = new ObjectMapper();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
-            EmployeeDAO employeeDAO = addEmployeeDao();
             String id = (req.getParameter("id"));
-            if (id == null) {
-                resp.getWriter().println(employeeDAO.selectAll().stream().map(EmployeeServlet::transEmployeeToJson).collect(Collectors.joining(System.lineSeparator())));
-            } else
-                resp.getWriter().println(transEmployeeToJson(employeeDAO.selectOne(Integer.parseInt(id)).get()));
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            if (id.equals("")) {
+                resp.getWriter().println(employeeService.getEmployeeDAO().selectAll().stream()
+                        .map(EmployeeServlet::employeeToJson)
+                        .collect(Collectors.joining(System.lineSeparator())));
+            } else {
+                resp.getWriter().println(employeeToJson(employeeService.getEmployeeDAO().selectOne(Integer.parseInt(id)).orElse(null)));}
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
         }
     }
 
-    private static String transEmployeeToJson(Employee t) {
-        ObjectMapper mapper = new ObjectMapper();
+    private static String employeeToJson(Employee employee) {
         try {
-            return mapper.writeValueAsString(t);
+            return mapper.writeValueAsString(employee);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
             return null;
@@ -51,17 +40,14 @@ public class EmployeeServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String str = req.getReader()
-                .lines()
+        String str = req.getReader().lines()
                 .collect(Collectors.joining(System.lineSeparator()));
-        ObjectMapper mapper = new ObjectMapper();
         try {
-            EmployeeDAO employeeDAO = addEmployeeDao();
-            employeeDAO.insertRecord(mapper.readValue(str, Employee.class));
-            resp.getWriter().println("Add new vacancy");
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            employeeService.getEmployeeDAO().insertRecord(mapper.readValue(str, Employee.class));
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
         }
+        resp.getWriter().println("Add new vacancy");
     }
 
     @Override
@@ -69,28 +55,21 @@ public class EmployeeServlet extends HttpServlet {
         String str = req.getReader()
                 .lines()
                 .collect(Collectors.joining(System.lineSeparator()));
-        ObjectMapper mapper = new ObjectMapper();
         try {
-            EmployeeDAO employeeDAO = addEmployeeDao();
-            employeeDAO.updateRecord(mapper.readValue(str, Employee.class));
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            employeeService.getEmployeeDAO().updateRecord(mapper.readValue(str, Employee.class));
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
         }
     }
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp){
         int id = Integer.parseInt(req.getParameter("id"));
         try {
-            EmployeeDAO employeeDAO = addEmployeeDao();
-            employeeDAO.deleteRecord(id);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            employeeService.getEmployeeDAO().deleteRecord(id);
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
         }
-    }
-
-    @Override
-    public void destroy() {
     }
 }
 
