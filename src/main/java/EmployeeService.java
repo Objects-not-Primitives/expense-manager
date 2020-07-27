@@ -1,16 +1,16 @@
-import java.io.IOException;
 import java.sql.SQLException;
 
 public class EmployeeService {
     private static final String propertiesPath = "application.properties";
 
-    EmployeeDAO employeeDAO;
+    private EmployeeDAO employeeDAO;
 
     public EmployeeService() {
         try {
             this.employeeDAO = EmployeeDAO.getInstance(PropertyLoader.load(propertiesPath));
-        } catch (SQLException | IOException throwable) {
-            throwable.printStackTrace();
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+            System.out.println("No connection to database");
         }
     }
 

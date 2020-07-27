@@ -22,10 +22,15 @@ public class EmployeeServlet extends HttpServlet {
                 resp.getWriter().println(employeeService.getEmployeeDAO().selectAll().stream()
                         .map(EmployeeServlet::employeeToJson)
                         .collect(Collectors.joining(System.lineSeparator())));
-            } else {
-                resp.getWriter().println(employeeToJson(employeeService.getEmployeeDAO().selectOne(Integer.parseInt(id)).orElse(null)));}
+            } else {Employee employee = employeeService.getEmployeeDAO().selectOne(Integer.parseInt(id)).orElse(null);
+                if (employee == null){ resp.getWriter().println("There is no Employee with such id");
+                } else{
+                resp.getWriter().println(employeeToJson(employee));
+                }
+            }
         } catch (SQLException throwable) {
             throwable.printStackTrace();
+            resp.getWriter().println("No connection to database");
         }
     }
 
@@ -34,9 +39,11 @@ public class EmployeeServlet extends HttpServlet {
             return mapper.writeValueAsString(employee);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
+            System.out.println("Problems encountered when processing (parsing, generating) JSON content");
+            }
             return null;
         }
-    }
+
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -46,6 +53,7 @@ public class EmployeeServlet extends HttpServlet {
             employeeService.getEmployeeDAO().insertRecord(mapper.readValue(str, Employee.class));
         } catch (SQLException throwable) {
             throwable.printStackTrace();
+            resp.getWriter().println("No connection to database");
         }
         resp.getWriter().println("Add new vacancy");
     }
@@ -59,16 +67,18 @@ public class EmployeeServlet extends HttpServlet {
             employeeService.getEmployeeDAO().updateRecord(mapper.readValue(str, Employee.class));
         } catch (SQLException throwable) {
             throwable.printStackTrace();
+            resp.getWriter().println("No connection to database");
         }
     }
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp){
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         int id = Integer.parseInt(req.getParameter("id"));
         try {
             employeeService.getEmployeeDAO().deleteRecord(id);
         } catch (SQLException throwable) {
             throwable.printStackTrace();
+            resp.getWriter().println("No connection to database");
         }
     }
 }
