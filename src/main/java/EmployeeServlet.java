@@ -12,7 +12,7 @@ public class EmployeeServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         String id = (req.getParameter("id"));
-        if (id.equals("")) {
+        if (id == null) {
             employeeService.getAll(resp);
         } else {
             employeeService.getOne(id, resp);
