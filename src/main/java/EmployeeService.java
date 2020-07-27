@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -24,12 +25,9 @@ public class EmployeeService {
 
     public void getOne(String id, HttpServletResponse resp) {
         try {
-            Employee employee = employeeDAO.selectOne(Integer.parseInt(id)).orElse(null);
-            if (employee == null) {
-                servletWriter("There is no Employee with such id", resp);
-            } else {
-                servletWriter(employeeToJson(employee), resp);
-            }
+            employeeDAO.selectOne(Integer.parseInt(id)).ifPresentOrElse
+                    (employeeFunc -> servletWriter(employeeToJson(employeeFunc), resp),
+                    () -> servletWriter("There is no Employee with such id", resp));
         } catch (SQLException throwable) {
             throwable.printStackTrace();
             servletWriter("No connection to database", resp);
@@ -39,7 +37,7 @@ public class EmployeeService {
     public void getAll(HttpServletResponse resp) {
         try {
             servletWriter(employeeDAO.selectAll().stream()
-                    .map(EmployeeService::employeeToJson)
+                    .map(this::employeeToJson)
                     .collect(Collectors.joining(System.lineSeparator())), resp);
         } catch (SQLException throwable) {
             throwable.printStackTrace();
@@ -84,7 +82,7 @@ public class EmployeeService {
         }
     }
 
-    private static String employeeToJson(Employee employee) {
+    private String employeeToJson(Employee employee) {
         try {
             return mapper.writeValueAsString(employee);
         } catch (JsonProcessingException e) {
@@ -93,7 +91,7 @@ public class EmployeeService {
         }
     }
 
-    private static Employee jsonToEmployee(String jsonString) {
+    private Employee jsonToEmployee(String jsonString) {
         try {
             return mapper.readValue(jsonString, Employee.class);
         } catch (JsonProcessingException e) {
