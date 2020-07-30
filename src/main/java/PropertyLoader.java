@@ -4,7 +4,7 @@ import java.util.Properties;
 
 public class PropertyLoader {
 
-    public static Properties load(String propertiesPath){
+    public static Properties load(String propertiesPath) {
         Properties property = new Properties();
         InputStream input = PropertyLoader.class.getResourceAsStream(propertiesPath);
         try {

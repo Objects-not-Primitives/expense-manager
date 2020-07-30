@@ -7,7 +7,7 @@ public class TestEmployeeEquals {
         TestEmployeeEquals.employeeEqualsTest();
     }
 
-    private static void employeeEqualsTest( ){
+    private static void employeeEqualsTest() {
         Set<Employee> employeeSet = new HashSet<>();
 
         Employee employee1 = new Employee(1, "lol", 100);
@@ -20,7 +20,7 @@ public class TestEmployeeEquals {
 
         if (employeeSet.size() == expectedSize) {
             System.out.println("employee equals test passed");
-        } else  {
+        } else {
             System.out.println("employee equals test failed, expected size of set was "
                     + expectedSize + " but actually is " + employeeSet.size());
         }

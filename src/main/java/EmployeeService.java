@@ -26,7 +26,7 @@ public class EmployeeService {
         try {
             employeeDAO.selectOne(Integer.parseInt(id)).ifPresentOrElse
                     (employeeFunc -> servletWriter(employeeToJson(employeeFunc), resp),
-                    () -> servletWriter("There is no Employee with such id", resp));
+                            () -> servletWriter("There is no Employee with such id", resp));
         } catch (SQLException throwable) {
             throwable.printStackTrace();
             servletWriter("No connection to database", resp);
