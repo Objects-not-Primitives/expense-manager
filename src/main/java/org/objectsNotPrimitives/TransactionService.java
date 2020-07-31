@@ -1,3 +1,5 @@
+package org.objectsNotPrimitives;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -7,15 +9,15 @@ import java.sql.SQLException;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class EmployeeService {
+public class TransactionService {
     private static final ObjectMapper mapper = new ObjectMapper();
     private static final String propertiesPath = "application.properties";
 
-    private EmployeeDAO employeeDAO;
+    private TransactionDAO transactionDAO;
 
-    public EmployeeService() {
+    public TransactionService() {
         try {
-            this.employeeDAO = EmployeeDAO.getInstance(PropertyLoader.load(propertiesPath));
+            this.transactionDAO = TransactionDAO.getInstance(PropertyLoader.load(propertiesPath));
         } catch (SQLException exception) {
             exception.printStackTrace();
             System.out.println("No connection to database");
@@ -24,9 +26,9 @@ public class EmployeeService {
 
     public void getOne(String id, HttpServletResponse resp) {
         try {
-            employeeDAO.selectOne(Integer.parseInt(id)).ifPresentOrElse
+            transactionDAO.selectOne(Integer.parseInt(id)).ifPresentOrElse
                     (employeeFunc -> servletWriter(employeeToJson(employeeFunc), resp),
-                            () -> servletWriter("There is no Employee with such id", resp));
+                            () -> servletWriter("There is no transaction with such id", resp));
         } catch (SQLException throwable) {
             throwable.printStackTrace();
             servletWriter("No connection to database", resp);
@@ -35,7 +37,7 @@ public class EmployeeService {
 
     public void getAll(HttpServletResponse resp) {
         try {
-            servletWriter(employeeDAO.selectAll().stream()
+            servletWriter(transactionDAO.selectAll().stream()
                     .map(this::employeeToJson)
                     .collect(Collectors.joining(System.lineSeparator())), resp);
         } catch (SQLException throwable) {
@@ -46,8 +48,8 @@ public class EmployeeService {
 
     public void post(String jsonString, HttpServletResponse resp) {
         try {
-            employeeDAO.insertRecord(Objects.requireNonNull(jsonToEmployee(jsonString)));
-            servletWriter("New Employee added", resp);
+            transactionDAO.insertRecord(Objects.requireNonNull(jsonToEmployee(jsonString)));
+            servletWriter("New transaction added", resp);
         } catch (SQLException throwable) {
             throwable.printStackTrace();
             servletWriter("No connection to database", resp);
@@ -56,7 +58,7 @@ public class EmployeeService {
 
     public void put(String jsonString, HttpServletResponse resp) {
         try {
-            employeeDAO.updateRecord(Objects.requireNonNull(jsonToEmployee(jsonString)));
+            transactionDAO.updateRecord(Objects.requireNonNull(jsonToEmployee(jsonString)));
         } catch (SQLException throwable) {
             throwable.printStackTrace();
             servletWriter("No connection to database", resp);
@@ -65,7 +67,7 @@ public class EmployeeService {
 
     public void delete(int id, HttpServletResponse resp) {
         try {
-            employeeDAO.deleteRecord(id);
+            transactionDAO.deleteRecord(id);
         } catch (SQLException throwable) {
             throwable.printStackTrace();
             servletWriter("No connection to database", resp);
@@ -81,18 +83,18 @@ public class EmployeeService {
         }
     }
 
-    private String employeeToJson(Employee employee) {
+    private String employeeToJson(Transaction transaction) {
         try {
-            return mapper.writeValueAsString(employee);
+            return mapper.writeValueAsString(transaction);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
             return "Problems encountered when processing (parsing, generating) JSON content";
         }
     }
 
-    private Employee jsonToEmployee(String jsonString) {
+    private Transaction jsonToEmployee(String jsonString) {
         try {
-            return mapper.readValue(jsonString, Employee.class);
+            return mapper.readValue(jsonString, Transaction.class);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
             System.out.println("Problems encountered when processing (parsing, generating) JSON content");

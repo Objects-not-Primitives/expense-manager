@@ -1,10 +1,12 @@
+package org.objectsNotPrimitives;
+
 import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-public class TestEmployeeDAO {
+public class TestTransactionDAO {
     private static final String propertiesPath = "application.properties";
     private static final String deleteDBPath = "src\\main\\resources\\deleteDB.sql";
     private static final String createDBPath = "src\\main\\resources\\createDB.sql";
@@ -18,23 +20,23 @@ public class TestEmployeeDAO {
         execScripts();
         Properties property = PropertyLoader.load(propertiesPath);
 
-        try (EmployeeDAO employeeDAO = EmployeeDAO.getInstance(property)) {
-            Employee testEmployee1 = new Employee(1, "boss", 250000);
-            Employee testEmployee2 = new Employee(2, "programmer", 60000);
-            Employee testEmployee2New = new Employee(2, "programmer", 80000);
-            Employee testEmployee3deleted = new Employee(3, "cleaner", 15000);
+        try (TransactionDAO transactionDAO = TransactionDAO.getInstance(property)) {
+            Transaction testTransaction1 = new Transaction(1, "boss", 250000);
+            Transaction testTransaction2 = new Transaction(2, "programmer", 60000);
+            Transaction testTransaction2New = new Transaction(2, "programmer", 80000);
+            Transaction testTransaction3Deleted = new Transaction(3, "cleaner", 15000);
 
-            List<Employee> testEmployeeList = new ArrayList<>();
-            testEmployeeList.add(testEmployee1);
-            testEmployeeList.add(testEmployee2New);
-            employeeDAO.insertRecord(testEmployee1);
-            employeeDAO.insertRecord(testEmployee2);
-            employeeDAO.insertRecord(testEmployee3deleted);
-            employeeDAO.updateRecord(testEmployee2New);
-            employeeDAO.deleteRecord(testEmployee3deleted.getId());
+            List<Transaction> testTransactionList = new ArrayList<>();
+            testTransactionList.add(testTransaction1);
+            testTransactionList.add(testTransaction2New);
+            transactionDAO.insertRecord(testTransaction1);
+            transactionDAO.insertRecord(testTransaction2);
+            transactionDAO.insertRecord(testTransaction3Deleted);
+            transactionDAO.updateRecord(testTransaction2New);
+            transactionDAO.deleteRecord(testTransaction3Deleted.getId());
 
-            List<Employee> testEmployeeListDB = employeeDAO.selectAll();
-            if (testEmployeeList.get(0).equals(employeeDAO.selectOne(1).get()) && testEmployeeList.equals(testEmployeeListDB)) {
+            List<Transaction> testTransactionListDB = transactionDAO.selectAll();
+            if (testTransactionList.get(0).equals(transactionDAO.selectOne(1).get()) && testTransactionList.equals(testTransactionListDB)) {
                 System.out.println("Методы DAO работают нормально");
                 return true;
             } else {
@@ -53,7 +55,7 @@ public class TestEmployeeDAO {
 
     private static boolean testConnect() throws IOException {
         Properties property = PropertyLoader.load(propertiesPath);
-        try (Connection con = EmployeeDAO.connect(property)) {
+        try (Connection con = TransactionDAO.connect(property)) {
             System.out.println("Подключение к БД установлено");
             return true;
         } catch (Exception e) {

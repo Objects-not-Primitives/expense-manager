@@ -1,3 +1,5 @@
+package org.objectsNotPrimitives;
+
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -6,16 +8,16 @@ import java.io.IOException;
 import java.util.stream.Collectors;
 
 @WebServlet(urlPatterns = {"/first-servlet/*"})
-public class EmployeeServlet extends HttpServlet {
-    private static final EmployeeService employeeService = new EmployeeService();
+public class TransactionServlet extends HttpServlet {
+    private static final TransactionService transactionService = new TransactionService();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         String id = (req.getParameter("id"));
         if (id == null) {
-            employeeService.getAll(resp);
+            transactionService.getAll(resp);
         } else {
-            employeeService.getOne(id, resp);
+            transactionService.getOne(id, resp);
         }
     }
 
@@ -24,9 +26,9 @@ public class EmployeeServlet extends HttpServlet {
         try {
             String jsonString = req.getReader().lines()
                     .collect(Collectors.joining(System.lineSeparator()));
-            employeeService.post(jsonString, resp);
+            transactionService.post(jsonString, resp);
         } catch (IOException e) {
-            employeeService.servletWriter("Invalid HTTP request", resp);
+            transactionService.servletWriter("Invalid HTTP request", resp);
             e.printStackTrace();
         }
     }
@@ -37,9 +39,9 @@ public class EmployeeServlet extends HttpServlet {
             String jsonString = req.getReader()
                     .lines()
                     .collect(Collectors.joining(System.lineSeparator()));
-            employeeService.put(jsonString, resp);
+            transactionService.put(jsonString, resp);
         } catch (IOException e) {
-            employeeService.servletWriter("Invalid HTTP request", resp);
+            transactionService.servletWriter("Invalid HTTP request", resp);
             e.printStackTrace();
         }
     }
@@ -47,7 +49,7 @@ public class EmployeeServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
         int id = Integer.parseInt(req.getParameter("id"));
-        employeeService.delete(id, resp);
+        transactionService.delete(id, resp);
     }
 }
 
