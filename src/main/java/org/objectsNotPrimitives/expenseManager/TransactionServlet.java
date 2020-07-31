@@ -1,4 +1,4 @@
-package org.objectsNotPrimitives;
+package org.objectsNotPrimitives.expenseManager;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;

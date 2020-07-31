@@ -1,4 +1,4 @@
-package org.objectsNotPrimitives;
+package org.objectsNotPrimitives.expenseManager;
 
 import java.io.IOException;
 import java.sql.*;
