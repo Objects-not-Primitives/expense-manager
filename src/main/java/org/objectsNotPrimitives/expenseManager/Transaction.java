@@ -1,17 +1,20 @@
 package org.objectsNotPrimitives.expenseManager;
 
+import java.sql.Date;
 import java.util.Objects;
 
 public class Transaction {
 
     private int id;
-    private String vacancyName;
-    private int salary;
+    private long value;
+    private Date date;
+    private String purpose;
 
-    public Transaction(int id, String vacancyName, int salary) {
+    public Transaction(int id, long value, Date date, String purpose) {
         this.id = id;
-        this.vacancyName = vacancyName;
-        this.salary = salary;
+        this.value = value;
+        this.date = date;
+        this.purpose = purpose;
     }
 
     public Transaction() {
@@ -21,12 +24,16 @@ public class Transaction {
         return id;
     }
 
-    public int getSalary() {
-        return salary;
+    public long getValue() {
+        return value;
     }
 
-    public String getVacancyName() {
-        return vacancyName;
+    public Date getDate() {
+        return date;
+    }
+
+    public String getPurpose() {
+        return purpose;
     }
 
     @Override
@@ -35,12 +42,13 @@ public class Transaction {
         if (o == null || getClass() != o.getClass()) return false;
         Transaction transaction = (Transaction) o;
         return id == transaction.id &&
-                salary == transaction.salary &&
-                vacancyName.equals(transaction.vacancyName);
+                value == transaction.value &&
+                date.equals(transaction.date)&&
+                purpose.equals(transaction.purpose);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, vacancyName, salary);
+        return Objects.hash(id, value, date, purpose);
     }
 }

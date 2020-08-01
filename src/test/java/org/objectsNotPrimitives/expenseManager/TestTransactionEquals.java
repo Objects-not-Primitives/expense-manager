@@ -1,5 +1,6 @@
 package org.objectsNotPrimitives.expenseManager;
 
+import java.sql.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,8 +13,8 @@ public class TestTransactionEquals {
     private static void employeeEqualsTest() {
         Set<Transaction> transactionSet = new HashSet<>();
 
-        Transaction transaction1 = new Transaction(1, "lol", 100);
-        Transaction transaction2 = new Transaction(1, "lol", 100);
+        Transaction transaction1 = new Transaction(1, 250000, Date.valueOf("2020-12-12"),"xz");
+        Transaction transaction2 = new Transaction(1, 250000, Date.valueOf("2020-12-12"),"xz");
 
         transactionSet.add(transaction1);
         transactionSet.add(transaction2);

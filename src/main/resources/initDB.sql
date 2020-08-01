@@ -1,5 +1,6 @@
-insert into Transaction values (1,'programmer', 350000000);
-insert into Transaction values (2,'programmer', 150000000);
-insert into Transaction values (3,'programmer', 30000);
-insert into Transaction values (4,'manager', 49999);
-insert into Transaction values (5,'cleaner', 15250);
+insert into Transaction values (1,2000, '2020.05.13','unknown');
+insert into Transaction values (2,5000, '2020.05.15','unknown');
+insert into Transaction values (3,1000, '2020.05.19','unknown');
+insert into Transaction values (4,1499, '2020.06.13','unknown');
+insert into Transaction values (5,350000, '2020.05.13','unknown');
+

@@ -36,30 +36,32 @@ public class TransactionDAO implements AutoCloseable {
     }
 
     public void updateRecord(Transaction transaction) throws SQLException {
-        String sqlCommand = "update transaction set vacancy_name = ?, salary = ? where id = ?";
+        String sqlCommand = "update transaction set value = ?, date = ?, purpose = ? where id = ?";
         try (PreparedStatement preparedStatement = connectWay.prepareStatement(sqlCommand)) {
-            preparedStatement.setString(1, transaction.getVacancyName());
-            preparedStatement.setInt(2, transaction.getSalary());
-            preparedStatement.setInt(3, transaction.getId());
+            preparedStatement.setLong(1, transaction.getValue());
+            preparedStatement.setDate(2, transaction.getDate());
+            preparedStatement.setString(3, transaction.getPurpose());
+            preparedStatement.setInt(4, transaction.getId());
             int i = preparedStatement.executeUpdate();
         }
 
     }
 
-    public void deleteRecord(int employeeId) throws SQLException {
+    public void deleteRecord(int transactionId) throws SQLException {
         String sqlCommand = "delete from transaction where id = ?";
         try (PreparedStatement preparedStatement = connectWay.prepareStatement(sqlCommand)) {
-            preparedStatement.setInt(1, employeeId);
+            preparedStatement.setInt(1, transactionId);
             int i = preparedStatement.executeUpdate();
         }
     }
 
     public void insertRecord(Transaction transaction) throws SQLException {
-        String sqlCommand = "insert into transaction values (?,?,?)";
+        String sqlCommand = "insert into transaction values (?,?,?,?)";
         try (PreparedStatement preparedStatement = connectWay.prepareStatement(sqlCommand)) {
             preparedStatement.setInt(1, transaction.getId());
-            preparedStatement.setString(2, transaction.getVacancyName());
-            preparedStatement.setInt(3, transaction.getSalary());
+            preparedStatement.setLong(2, transaction.getValue());
+            preparedStatement.setDate(3, transaction.getDate());
+            preparedStatement.setString(4, transaction.getPurpose());
             int i = preparedStatement.executeUpdate();
         }
     }
@@ -69,7 +71,7 @@ public class TransactionDAO implements AutoCloseable {
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                Optional<Transaction> opt = Optional.of(new Transaction(resultSet.getInt("id"), resultSet.getString("vacancy_name"), resultSet.getInt("salary")));
+                Optional<Transaction> opt = Optional.of(new Transaction(resultSet.getInt("id"), resultSet.getLong("value"), resultSet.getDate("date"),resultSet.getString("purpose")));
                 return opt;
             }
             return Optional.empty();
@@ -80,9 +82,9 @@ public class TransactionDAO implements AutoCloseable {
         try (Statement stmt = connectWay.createStatement()) {
             List<Transaction> employeesList = new ArrayList<>();
             String sqlCommand = "SELECT * FROM transaction ";
-            ResultSet resSet = stmt.executeQuery(sqlCommand);
-            while (resSet.next()) {
-                employeesList.add(new Transaction(resSet.getInt("id"), resSet.getString("vacancy_name"), resSet.getInt("salary")));
+            ResultSet resultSet = stmt.executeQuery(sqlCommand);
+            while (resultSet.next()) {
+                employeesList.add(new Transaction(resultSet.getInt("id"), resultSet.getLong("value"), resultSet.getDate("date"),resultSet.getString("purpose")));
             }
             return employeesList;
         }
