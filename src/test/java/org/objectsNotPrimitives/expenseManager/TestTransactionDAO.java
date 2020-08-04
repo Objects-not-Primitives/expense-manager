@@ -21,10 +21,10 @@ public class TestTransactionDAO {
         Properties property = PropertyLoader.load(propertiesPath);
 
         try (TransactionDAO transactionDAO = TransactionDAO.getInstance(property)) {
-            Transaction testTransaction1 = new Transaction(1,250000,Date.valueOf("2020-12-12"),"xz");
-            Transaction testTransaction2 = new Transaction(2, 250000,Date.valueOf("2020-12-13"),"xz");
-            Transaction testTransaction2New = new Transaction(2, 350000,Date.valueOf("2020-12-14"),"up");
-            Transaction testTransaction3Deleted = new Transaction(3, 250000,Date.valueOf("2020-12-15"),"xz");
+            Transaction testTransaction1 = new Transaction(1, 2500, Date.valueOf("2020-12-12"), "xz", TypesOfExpenses.FOOD);
+            Transaction testTransaction2 = new Transaction(2, 250000, Date.valueOf("2020-12-13"), "xz", TypesOfExpenses.OTHER);
+            Transaction testTransaction2New = new Transaction(2, 350000, Date.valueOf("2020-12-14"), "up", TypesOfExpenses.OTHER);
+            Transaction testTransaction3Deleted = new Transaction(3, 250000, Date.valueOf("2020-12-15"), "xz", TypesOfExpenses.ENTERTAINMENT);
 
             List<Transaction> testTransactionList = new ArrayList<>();
             testTransactionList.add(testTransaction1);

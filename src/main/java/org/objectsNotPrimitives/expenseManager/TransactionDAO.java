@@ -36,12 +36,13 @@ public class TransactionDAO implements AutoCloseable {
     }
 
     public void updateRecord(Transaction transaction) throws SQLException {
-        String sqlCommand = "update transaction set value = ?, date = ?, purpose = ? where id = ?";
+        String sqlCommand = "update transaction set value = ?, date = ?, purpose = ?, types = ? where id = ?";
         try (PreparedStatement preparedStatement = connectWay.prepareStatement(sqlCommand)) {
             preparedStatement.setLong(1, transaction.getValue());
             preparedStatement.setDate(2, transaction.getDate());
             preparedStatement.setString(3, transaction.getPurpose());
-            preparedStatement.setInt(4, transaction.getId());
+            preparedStatement.setInt(5, transaction.getId());
+            preparedStatement.setString(4, transaction.getType().getTypesOfExpenses());
             int i = preparedStatement.executeUpdate();
         }
 
@@ -56,12 +57,13 @@ public class TransactionDAO implements AutoCloseable {
     }
 
     public void insertRecord(Transaction transaction) throws SQLException {
-        String sqlCommand = "insert into transaction values (?,?,?,?)";
+        String sqlCommand = "insert into transaction values (?,?,?,?,?)";
         try (PreparedStatement preparedStatement = connectWay.prepareStatement(sqlCommand)) {
             preparedStatement.setInt(1, transaction.getId());
             preparedStatement.setLong(2, transaction.getValue());
             preparedStatement.setDate(3, transaction.getDate());
             preparedStatement.setString(4, transaction.getPurpose());
+            preparedStatement.setString(5, transaction.getType().getTypesOfExpenses());
             int i = preparedStatement.executeUpdate();
         }
     }
@@ -71,7 +73,7 @@ public class TransactionDAO implements AutoCloseable {
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                Optional<Transaction> opt = Optional.of(new Transaction(resultSet.getInt("id"), resultSet.getLong("value"), resultSet.getDate("date"),resultSet.getString("purpose")));
+                Optional<Transaction> opt = Optional.of(new Transaction(resultSet.getInt("id"), resultSet.getLong("value"), resultSet.getDate("date"), resultSet.getString("purpose"), TypesOfExpenses.valueOf(resultSet.getString("types"))));
                 return opt;
             }
             return Optional.empty();
@@ -84,7 +86,7 @@ public class TransactionDAO implements AutoCloseable {
             String sqlCommand = "SELECT * FROM transaction ";
             ResultSet resultSet = stmt.executeQuery(sqlCommand);
             while (resultSet.next()) {
-                employeesList.add(new Transaction(resultSet.getInt("id"), resultSet.getLong("value"), resultSet.getDate("date"),resultSet.getString("purpose")));
+                employeesList.add(new Transaction(resultSet.getInt("id"), resultSet.getLong("value"), resultSet.getDate("date"), resultSet.getString("purpose"), TypesOfExpenses.valueOf(resultSet.getString("types"))));
             }
             return employeesList;
         }

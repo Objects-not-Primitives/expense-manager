@@ -9,12 +9,14 @@ public class Transaction {
     private long value;
     private Date date;
     private String purpose;
+    private TypesOfExpenses type;
 
-    public Transaction(int id, long value, Date date, String purpose) {
+    public Transaction(int id, long value, Date date, String purpose, TypesOfExpenses type) {
         this.id = id;
         this.value = value;
         this.date = date;
         this.purpose = purpose;
+        this.type = type;
     }
 
     public Transaction() {
@@ -34,6 +36,10 @@ public class Transaction {
 
     public String getPurpose() {
         return purpose;
+    }
+
+    public TypesOfExpenses getType() {
+        return type;
     }
 
     @Override
