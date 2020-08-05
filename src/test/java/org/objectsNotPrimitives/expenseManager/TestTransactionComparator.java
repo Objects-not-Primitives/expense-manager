@@ -1,6 +1,9 @@
 package org.objectsNotPrimitives.expenseManager;
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.TreeSet;
 /** Временный тест для проверки работы компаратора для Transaction.
  * В реальности можно подумать над тем, чтобы убрать id из сортировки
@@ -33,7 +36,20 @@ public class TestTransactionComparator {
         testTransactionSet.add(testTransaction6);
         testTransactionSet.add(testTransaction7);
         testTransactionSet.add(testTransaction8);
-        for (Transaction t : testTransactionSet){
+        /*for (Transaction t : testTransactionSet){
+            System.out.println(t.getPurpose());
+        }*/
+        List <Transaction> testTransactionList= new ArrayList<>();
+        testTransactionList.add(testTransaction1);
+        testTransactionList.add(testTransaction2);
+        testTransactionList.add(testTransaction3);
+        testTransactionList.add(testTransaction4);
+        testTransactionList.add(testTransaction5);
+        testTransactionList.add(testTransaction6);
+        testTransactionList.add(testTransaction7);
+        testTransactionList.add(testTransaction8);
+        testTransactionList = SorterService.sortBy("value","date", testTransactionList);
+        for (Transaction t : testTransactionList){
             System.out.println(t.getPurpose());
         }
         return true;
