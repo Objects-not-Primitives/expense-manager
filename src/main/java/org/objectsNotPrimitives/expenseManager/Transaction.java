@@ -3,15 +3,15 @@ package org.objectsNotPrimitives.expenseManager;
 import java.sql.Date;
 import java.util.Objects;
 
-public class Transaction {
+public class Transaction implements Comparable<Transaction> {
 
-    private int id;
-    private long value;
+    private Integer id;
+    private Long value;
     private Date date;
     private String purpose;
     private TypesOfExpenses type;
 
-    public Transaction(int id, long value, Date date, String purpose, TypesOfExpenses type) {
+    public Transaction(Integer id, Long value, Date date, String purpose, TypesOfExpenses type) {
         this.id = id;
         this.value = value;
         this.date = date;
@@ -22,11 +22,11 @@ public class Transaction {
     public Transaction() {
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public long getValue() {
+    public Long getValue() {
         return value;
     }
 
@@ -47,14 +47,30 @@ public class Transaction {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Transaction transaction = (Transaction) o;
-        return id == transaction.id &&
-                value == transaction.value &&
-                date.equals(transaction.date)&&
-                purpose.equals(transaction.purpose);
+        return id.equals(transaction.id) &&
+                value.equals(transaction.value) &&
+                date.equals(transaction.date) &&
+                purpose.equals(transaction.purpose) &&
+                type.equals(transaction.type);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, value, date, purpose);
+        return Objects.hash(id, value, date, purpose, type);
+    }
+
+    @Override
+    public int compareTo(Transaction o) {
+        int result = this.id.compareTo(o.id);
+        if (result == 0) {
+            result = this.value.compareTo(o.value);
+            if (result == 0) {
+                result = this.date.compareTo(o.date);
+                if (result == 0) {
+                    result = this.type.compareTo(o.type);
+                }
+            }
+        }
+        return result;
     }
 }
