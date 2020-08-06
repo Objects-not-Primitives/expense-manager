@@ -1,47 +1,21 @@
 package org.objectsNotPrimitives.expenseManager;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
+import java.util.stream.*;
 
 public class SorterService {
-    public static List<Transaction> sortBy (String firstParam, String secondParam, List<Transaction> transactionList){
-        String switchParam =firstParam+secondParam;
-        List<Transaction> sortedTransactionList = new ArrayList<>();
-        switch (switchParam){
-            case ("valuedate"):
-                sortedTransactionList = transactionList.stream().sorted(
-                        Comparator.comparing(Transaction::getValue).thenComparing(Transaction::getDate)
-                ).collect(Collectors.toList());
-                break;
-            case ("valuetype"):
-                sortedTransactionList = transactionList.stream().sorted(
-                        Comparator.comparing(Transaction::getValue).thenComparing(Transaction::getType)
-                ).collect(Collectors.toList());
-                break;
-            case ("datevalue"):
-               sortedTransactionList = transactionList.stream().sorted(
-                        Comparator.comparing(Transaction::getDate).thenComparing(Transaction::getValue)
-                ).collect(Collectors.toList());
-                break;
-            case ("datetype"):
-                sortedTransactionList = transactionList.stream().sorted(
-                        Comparator.comparing(Transaction::getDate).thenComparing(Transaction::getType)
-                ).collect(Collectors.toList());
-                break;
-            case ("typedate"):
-                sortedTransactionList = transactionList.stream().sorted(
-                        Comparator.comparing(Transaction::getType).thenComparing(Transaction::getDate)
-                ).collect(Collectors.toList());
-                break;
-            case ("typevalue"):
-                sortedTransactionList = transactionList.stream().sorted(
-                        Comparator.comparing(Transaction::getType).thenComparing(Transaction::getValue)
-                ).collect(Collectors.toList());
-                break;
-        }
-    return sortedTransactionList;
+
+    private final HashMap<String, Stream<Transaction>> sortMap;
+
+    public SorterService(List<Transaction> transactionList) {
+        HashMap<String, Stream<Transaction>> stringFunctionHashMap = new HashMap<>();
+        stringFunctionHashMap.put("value", transactionList.stream().sorted(Comparator.comparing(Transaction::getValue)));
+        stringFunctionHashMap.put("date", transactionList.stream().sorted(Comparator.comparing(Transaction::getDate)));
+        stringFunctionHashMap.put("type", transactionList.stream().sorted(Comparator.comparing(Transaction::getType)));
+        this.sortMap = stringFunctionHashMap;
     }
 
+    public HashMap<String, Stream<Transaction>> getSortMap() {
+        return sortMap;
+    }
 }
