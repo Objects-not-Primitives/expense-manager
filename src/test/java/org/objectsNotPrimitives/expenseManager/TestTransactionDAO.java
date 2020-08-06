@@ -22,7 +22,10 @@ public class TestTransactionDAO {
 
         try (TransactionDAO transactionDAO = TransactionDAO.getInstance(property)) {
             Transaction testTransaction1 = new Transaction(1, 2500L, Date.valueOf("2020-12-12"), "xz", TypesOfExpenses.FOOD);
-            Transaction testTransaction2 = new Transaction(2, 250000L, Date.valueOf("2020-12-13"), "xz", TypesOfExpenses.OTHER);
+            Transaction testTransaction2 = new Transaction(2, 2501L, Date.valueOf("2020-12-13"), "xz2", TypesOfExpenses.OTHER);
+            Transaction testTransaction3 = new Transaction(6, 2502L, Date.valueOf("2020-12-13"), "xz3", TypesOfExpenses.OTHER);
+            Transaction testTransaction4 = new Transaction(4, 2503L, Date.valueOf("2020-12-13"), "xz4", TypesOfExpenses.OTHER);
+            Transaction testTransaction5 = new Transaction(5, 2504L, Date.valueOf("2020-12-13"), "xz5", TypesOfExpenses.OTHER);
             Transaction testTransaction2New = new Transaction(2, 350000L, Date.valueOf("2020-12-14"), "up", TypesOfExpenses.OTHER);
             Transaction testTransaction3Deleted = new Transaction(3, 250000L, Date.valueOf("2020-12-15"), "xz", TypesOfExpenses.ENTERTAINMENT);
 
@@ -30,6 +33,9 @@ public class TestTransactionDAO {
             testTransactionList.add(testTransaction1);
             testTransactionList.add(testTransaction2New);
             transactionDAO.insertRecord(testTransaction1);
+            transactionDAO.insertRecord(testTransaction3);
+            transactionDAO.insertRecord(testTransaction4);
+            transactionDAO.insertRecord(testTransaction5);
             transactionDAO.insertRecord(testTransaction2);
             transactionDAO.insertRecord(testTransaction3Deleted);
             transactionDAO.updateRecord(testTransaction2New);

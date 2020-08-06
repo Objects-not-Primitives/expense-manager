@@ -27,7 +27,7 @@ public class TransactionService {
     public void getOne(String id, HttpServletResponse resp) {
         try {
             transactionDAO.selectOne(Integer.parseInt(id)).ifPresentOrElse
-                    (employeeFunc -> servletWriter(employeeToJson(employeeFunc), resp),
+                    (employeeFunc -> servletWriter(transactionToJson(employeeFunc), resp),
                             () -> servletWriter("There is no transaction with such id", resp));
         } catch (SQLException throwable) {
             throwable.printStackTrace();
@@ -38,7 +38,7 @@ public class TransactionService {
     public void getAll(HttpServletResponse resp) {
         try {
             servletWriter(transactionDAO.selectAll().stream()
-                    .map(this::employeeToJson)
+                    .map(this::transactionToJson)
                     .collect(Collectors.joining(System.lineSeparator())), resp);
         } catch (SQLException throwable) {
             throwable.printStackTrace();
@@ -48,7 +48,7 @@ public class TransactionService {
 
     public void post(String jsonString, HttpServletResponse resp) {
         try {
-            transactionDAO.insertRecord(Objects.requireNonNull(jsonToEmployee(jsonString)));
+            transactionDAO.insertRecord(Objects.requireNonNull(jsonToTransaction(jsonString)));
             servletWriter("New transaction added", resp);
         } catch (SQLException throwable) {
             throwable.printStackTrace();
@@ -58,7 +58,7 @@ public class TransactionService {
 
     public void put(String jsonString, HttpServletResponse resp) {
         try {
-            transactionDAO.updateRecord(Objects.requireNonNull(jsonToEmployee(jsonString)));
+            transactionDAO.updateRecord(Objects.requireNonNull(jsonToTransaction(jsonString)));
         } catch (SQLException throwable) {
             throwable.printStackTrace();
             servletWriter("No connection to database", resp);
@@ -74,6 +74,18 @@ public class TransactionService {
         }
     }
 
+    public void getSortedTransactions(String sortType, HttpServletResponse resp) {
+        try {
+            SorterService sorterService = new SorterService (transactionDAO.selectAll());
+            servletWriter(sorterService.getSortMap().get(sortType)
+                    .map(this::transactionToJson)
+                    .collect(Collectors.joining(System.lineSeparator())), resp);
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+            servletWriter("No connection to database", resp);
+        }
+    }
+
     public void servletWriter(String text, HttpServletResponse resp) {
         try {
             resp.getWriter().println(text);
@@ -83,7 +95,7 @@ public class TransactionService {
         }
     }
 
-    private String employeeToJson(Transaction transaction) {
+    private String transactionToJson(Transaction transaction) {
         try {
             return mapper.writeValueAsString(transaction);
         } catch (JsonProcessingException e) {
@@ -92,7 +104,7 @@ public class TransactionService {
         }
     }
 
-    private Transaction jsonToEmployee(String jsonString) {
+    private Transaction jsonToTransaction(String jsonString) {
         try {
             return mapper.readValue(jsonString, Transaction.class);
         } catch (JsonProcessingException e) {
