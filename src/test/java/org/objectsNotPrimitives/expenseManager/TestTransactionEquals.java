@@ -13,8 +13,8 @@ public class TestTransactionEquals {
     private static void employeeEqualsTest() {
         Set<Transaction> transactionSet = new HashSet<>();
 
-        /*Transaction transaction1 = new Transaction(1, 250000, Date.valueOf("2020-12-12"),"xz");
-        Transaction transaction2 = new Transaction(1, 250000, Date.valueOf("2020-12-12"),"xz");
+        Transaction transaction1 = new Transaction(1, 250000L, Date.valueOf("2020-12-12"), "xz", TypesOfExpenses.OTHER);
+        Transaction transaction2 = new Transaction(1, 250000L, Date.valueOf("2020-12-12"), "xz", TypesOfExpenses.OTHER);
 
         transactionSet.add(transaction1);
         transactionSet.add(transaction2);
@@ -26,6 +26,6 @@ public class TestTransactionEquals {
         } else {
             System.out.println("transaction equals test failed, expected size of set was "
                     + expectedSize + " but actually is " + transactionSet.size());
-        }*/
+        }
     }
 }

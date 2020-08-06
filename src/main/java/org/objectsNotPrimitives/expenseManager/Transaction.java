@@ -61,14 +61,11 @@ public class Transaction implements Comparable<Transaction> {
 
     @Override
     public int compareTo(Transaction o) {
-        int result = this.id.compareTo(o.id);
+        int result = this.value.compareTo(o.value);
         if (result == 0) {
-            result = this.value.compareTo(o.value);
+            result = this.date.compareTo(o.date);
             if (result == 0) {
-                result = this.date.compareTo(o.date);
-                if (result == 0) {
-                    result = this.type.compareTo(o.type);
-                }
+                result = this.type.compareTo(o.type);
             }
         }
         return result;
