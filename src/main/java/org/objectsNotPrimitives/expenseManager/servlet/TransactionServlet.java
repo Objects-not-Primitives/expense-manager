@@ -38,8 +38,7 @@ public class TransactionServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) {
         try {
-            String jsonString = req.getReader()
-                    .lines()
+            String jsonString = req.getReader().lines()
                     .collect(Collectors.joining(System.lineSeparator()));
             transactionService.put(jsonString, resp);
         } catch (IOException e) {
