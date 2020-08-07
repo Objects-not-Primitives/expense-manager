@@ -1,4 +1,4 @@
-package org.objectsNotPrimitives.expenseManager;
+package org.objectsNotPrimitives.expenseManager.model;
 
 public enum TypesOfExpenses {
     FOOD("FOOD"),

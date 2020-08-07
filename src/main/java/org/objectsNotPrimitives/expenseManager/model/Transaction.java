@@ -1,4 +1,4 @@
-package org.objectsNotPrimitives.expenseManager;
+package org.objectsNotPrimitives.expenseManager.model;
 
 import java.sql.Date;
 import java.util.Objects;

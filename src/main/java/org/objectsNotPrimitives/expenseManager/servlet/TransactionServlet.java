@@ -1,4 +1,6 @@
-package org.objectsNotPrimitives.expenseManager;
+package org.objectsNotPrimitives.expenseManager.servlet;
+
+import org.objectsNotPrimitives.expenseManager.service.TransactionService;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;

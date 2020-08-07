@@ -1,5 +1,9 @@
 package org.objectsNotPrimitives.expenseManager;
 
+import org.objectsNotPrimitives.expenseManager.model.Transaction;
+import org.objectsNotPrimitives.expenseManager.model.TypesOfExpenses;
+import org.objectsNotPrimitives.expenseManager.utils.TransactionComparator;
+
 import java.sql.Date;
 import java.util.TreeSet;
 

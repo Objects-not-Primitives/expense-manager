@@ -1,5 +1,8 @@
 package org.objectsNotPrimitives.expenseManager;
 
+import org.objectsNotPrimitives.expenseManager.model.Transaction;
+import org.objectsNotPrimitives.expenseManager.model.TypesOfExpenses;
+
 import java.sql.Date;
 import java.util.HashSet;
 import java.util.Set;

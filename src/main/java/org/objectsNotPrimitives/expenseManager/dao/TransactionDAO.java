@@ -1,4 +1,7 @@
-package org.objectsNotPrimitives.expenseManager;
+package org.objectsNotPrimitives.expenseManager.dao;
+
+import org.objectsNotPrimitives.expenseManager.model.Transaction;
+import org.objectsNotPrimitives.expenseManager.model.TypesOfExpenses;
 
 import java.sql.*;
 import java.util.ArrayList;

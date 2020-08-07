@@ -1,4 +1,4 @@
-package org.objectsNotPrimitives.expenseManager;
+package org.objectsNotPrimitives.expenseManager.utils;
 
 import java.io.IOException;
 import java.io.InputStream;

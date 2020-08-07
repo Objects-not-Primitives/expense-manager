@@ -1,5 +1,11 @@
 package org.objectsNotPrimitives.expenseManager;
 
+import org.objectsNotPrimitives.expenseManager.model.Transaction;
+import org.objectsNotPrimitives.expenseManager.dao.TransactionDAO;
+import org.objectsNotPrimitives.expenseManager.model.TypesOfExpenses;
+import org.objectsNotPrimitives.expenseManager.utils.PropertyLoader;
+import org.objectsNotPrimitives.expenseManager.utils.ScriptExecutor;
+
 import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;

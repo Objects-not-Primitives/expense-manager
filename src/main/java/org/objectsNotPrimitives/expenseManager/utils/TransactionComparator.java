@@ -1,4 +1,6 @@
-package org.objectsNotPrimitives.expenseManager;
+package org.objectsNotPrimitives.expenseManager.utils;
+
+import org.objectsNotPrimitives.expenseManager.model.Transaction;
 
 import java.util.Comparator;
 
