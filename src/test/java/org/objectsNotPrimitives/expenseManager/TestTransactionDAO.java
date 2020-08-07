@@ -31,7 +31,11 @@ public class TestTransactionDAO {
 
             List<Transaction> testTransactionList = new ArrayList<>();
             testTransactionList.add(testTransaction1);
+            testTransactionList.add(testTransaction3);
+            testTransactionList.add(testTransaction4);
+            testTransactionList.add(testTransaction5);
             testTransactionList.add(testTransaction2New);
+
             transactionDAO.insertRecord(testTransaction1);
             transactionDAO.insertRecord(testTransaction3);
             transactionDAO.insertRecord(testTransaction4);
@@ -42,7 +46,8 @@ public class TestTransactionDAO {
             transactionDAO.deleteRecord(testTransaction3Deleted.getId());
 
             List<Transaction> testTransactionListDB = transactionDAO.selectAll();
-            if (testTransactionList.get(0).equals(transactionDAO.selectOne(1).get()) && testTransactionList.equals(testTransactionListDB)) {
+            List<Transaction> testTransactionListOneType = transactionDAO.selectOneType(TypesOfExpenses.FOOD.getTypesOfExpenses());
+            if (testTransactionList.get(0).equals(transactionDAO.selectOne(1).get()) && testTransactionList.equals(testTransactionListDB) && testTransactionListOneType.get(0).getPurpose().equals("xz")) {
                 System.out.println("Методы DAO работают нормально");
                 return true;
             } else {

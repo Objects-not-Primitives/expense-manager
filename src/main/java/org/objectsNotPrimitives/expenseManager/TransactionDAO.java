@@ -80,6 +80,18 @@ public class TransactionDAO implements AutoCloseable {
         }
     }
 
+    public List<Transaction> selectOneType(String type)throws SQLException{
+        try (PreparedStatement preparedStatement = connectWay.prepareStatement("SELECT * FROM transaction where types = ?")) {
+            List<Transaction> employeesList = new ArrayList<>();
+            preparedStatement.setString(1,type);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                employeesList.add(new Transaction(resultSet.getInt("id"), resultSet.getLong("value"), resultSet.getDate("date"), resultSet.getString("purpose"), TypesOfExpenses.valueOf(resultSet.getString("types"))));
+            }
+            return employeesList;
+        }
+    }
+
     public List<Transaction> selectAll() throws SQLException {
         try (Statement stmt = connectWay.createStatement()) {
             List<Transaction> employeesList = new ArrayList<>();
