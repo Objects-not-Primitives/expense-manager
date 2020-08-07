@@ -56,6 +56,14 @@ public class TransactionDAO implements AutoCloseable {
         }
     }
 
+    public void deleteTypeRecord(String type) throws SQLException {
+        String sqlCommand = "delete from transaction where types = ?";
+        try (PreparedStatement preparedStatement = connectWay.prepareStatement(sqlCommand)) {
+            preparedStatement.setString(1, type);
+            int i = preparedStatement.executeUpdate();
+        }
+    }
+
     public void insertRecord(Transaction transaction) throws SQLException {
         String sqlCommand = "insert into transaction values (?,?,?,?,?)";
         try (PreparedStatement preparedStatement = connectWay.prepareStatement(sqlCommand)) {
@@ -80,10 +88,10 @@ public class TransactionDAO implements AutoCloseable {
         }
     }
 
-    public List<Transaction> selectOneType(String type)throws SQLException{
+    public List<Transaction> selectOneType(String type) throws SQLException {
         try (PreparedStatement preparedStatement = connectWay.prepareStatement("SELECT * FROM transaction where types = ?")) {
             List<Transaction> employeesList = new ArrayList<>();
-            preparedStatement.setString(1,type);
+            preparedStatement.setString(1, type);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 employeesList.add(new Transaction(resultSet.getInt("id"), resultSet.getLong("value"), resultSet.getDate("date"), resultSet.getString("purpose"), TypesOfExpenses.valueOf(resultSet.getString("types"))));

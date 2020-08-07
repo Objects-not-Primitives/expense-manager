@@ -31,10 +31,6 @@ public class TestTransactionDAO {
 
             List<Transaction> testTransactionList = new ArrayList<>();
             testTransactionList.add(testTransaction1);
-            testTransactionList.add(testTransaction3);
-            testTransactionList.add(testTransaction4);
-            testTransactionList.add(testTransaction5);
-            testTransactionList.add(testTransaction2New);
 
             transactionDAO.insertRecord(testTransaction1);
             transactionDAO.insertRecord(testTransaction3);
@@ -44,6 +40,7 @@ public class TestTransactionDAO {
             transactionDAO.insertRecord(testTransaction3Deleted);
             transactionDAO.updateRecord(testTransaction2New);
             transactionDAO.deleteRecord(testTransaction3Deleted.getId());
+            transactionDAO.deleteTypeRecord(TypesOfExpenses.OTHER.getTypesOfExpenses());
 
             List<Transaction> testTransactionListDB = transactionDAO.selectAll();
             List<Transaction> testTransactionListOneType = transactionDAO.selectOneType(TypesOfExpenses.FOOD.getTypesOfExpenses());
