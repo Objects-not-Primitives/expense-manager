@@ -41,11 +41,20 @@ public class TransactionDAO implements AutoCloseable {
             preparedStatement.setLong(1, transaction.getValue());
             preparedStatement.setDate(2, transaction.getDate());
             preparedStatement.setString(3, transaction.getPurpose());
-            preparedStatement.setInt(5, transaction.getId());
             preparedStatement.setString(4, transaction.getType().getTypesOfExpenses());
+            preparedStatement.setInt(5, transaction.getId());
             int i = preparedStatement.executeUpdate();
         }
+    }
 
+    public void updateTypeRecord(List<Transaction> list, String type) throws SQLException {
+        String sqlCommand = "update transaction set types = ? where id = ?";
+        for (Transaction transaction : list)
+            try (PreparedStatement preparedStatement = connectWay.prepareStatement(sqlCommand)) {
+                preparedStatement.setString(1, type);
+                preparedStatement.setInt(2, transaction.getId());
+                int i = preparedStatement.executeUpdate();
+            }
     }
 
     public void deleteRecord(int transactionId) throws SQLException {

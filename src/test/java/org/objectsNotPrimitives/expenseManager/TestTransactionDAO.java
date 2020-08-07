@@ -10,6 +10,7 @@ public class TestTransactionDAO {
     private static final String propertiesPath = "application.properties";
     private static final String deleteDBPath = "src\\main\\resources\\deleteDB.sql";
     private static final String createDBPath = "src\\main\\resources\\createDB.sql";
+    private static final String initDBPath = "src\\main\\resources\\initDB.sql";
 
     public static void main(String[] args) throws SQLException, IOException {
         testConnect();
@@ -21,30 +22,30 @@ public class TestTransactionDAO {
         Properties property = PropertyLoader.load(propertiesPath);
 
         try (TransactionDAO transactionDAO = TransactionDAO.getInstance(property)) {
-            Transaction testTransaction1 = new Transaction(1, 2500L, Date.valueOf("2020-12-12"), "xz", TypesOfExpenses.FOOD);
-            Transaction testTransaction2 = new Transaction(2, 2501L, Date.valueOf("2020-12-13"), "xz2", TypesOfExpenses.OTHER);
-            Transaction testTransaction3 = new Transaction(6, 2502L, Date.valueOf("2020-12-13"), "xz3", TypesOfExpenses.OTHER);
-            Transaction testTransaction4 = new Transaction(4, 2503L, Date.valueOf("2020-12-13"), "xz4", TypesOfExpenses.OTHER);
-            Transaction testTransaction5 = new Transaction(5, 2504L, Date.valueOf("2020-12-13"), "xz5", TypesOfExpenses.OTHER);
-            Transaction testTransaction2New = new Transaction(2, 350000L, Date.valueOf("2020-12-14"), "up", TypesOfExpenses.OTHER);
-            Transaction testTransaction3Deleted = new Transaction(3, 250000L, Date.valueOf("2020-12-15"), "xz", TypesOfExpenses.ENTERTAINMENT);
-
             List<Transaction> testTransactionList = new ArrayList<>();
+            Transaction testTransaction1 = new Transaction(11, 2500L, Date.valueOf("2020-12-12"), "xz", TypesOfExpenses.FOOD);
+            Transaction testTransaction2 = new Transaction(12, 2501L, Date.valueOf("2020-12-13"), "xz2", TypesOfExpenses.OTHER);
+            Transaction testTransaction3 = new Transaction(13, 2502L, Date.valueOf("2020-12-13"), "xz3", TypesOfExpenses.ENTERTAINMENT);
+            Transaction testTransaction4 = new Transaction(4, 2503L, Date.valueOf("2020-12-13"), "xz4", TypesOfExpenses.OTHER);
+
             testTransactionList.add(testTransaction1);
+            testTransactionList.add(testTransaction2);
+            testTransactionList.add(testTransaction3);
 
             transactionDAO.insertRecord(testTransaction1);
-            transactionDAO.insertRecord(testTransaction3);
-            transactionDAO.insertRecord(testTransaction4);
-            transactionDAO.insertRecord(testTransaction5);
             transactionDAO.insertRecord(testTransaction2);
-            transactionDAO.insertRecord(testTransaction3Deleted);
-            transactionDAO.updateRecord(testTransaction2New);
-            transactionDAO.deleteRecord(testTransaction3Deleted.getId());
+            transactionDAO.insertRecord(testTransaction3);
+            transactionDAO.updateRecord(testTransaction4);
+            transactionDAO.deleteRecord(5);
+            transactionDAO.updateTypeRecord(testTransactionList,TypesOfExpenses.FOOD.getTypesOfExpenses());
             transactionDAO.deleteTypeRecord(TypesOfExpenses.OTHER.getTypesOfExpenses());
 
-            List<Transaction> testTransactionListDB = transactionDAO.selectAll();
-            List<Transaction> testTransactionListOneType = transactionDAO.selectOneType(TypesOfExpenses.FOOD.getTypesOfExpenses());
-            if (testTransactionList.get(0).equals(transactionDAO.selectOne(1).get()) && testTransactionList.equals(testTransactionListDB) && testTransactionListOneType.get(0).getPurpose().equals("xz")) {
+            List<Transaction> testTransactionListOneType = transactionDAO.selectOneType(TypesOfExpenses.ENTERTAINMENT.getTypesOfExpenses());
+            List<Transaction> testTransactionListOtherType = transactionDAO.selectOneType(TypesOfExpenses.FOOD.getTypesOfExpenses());
+            testTransactionListOneType.addAll(testTransactionListOtherType);
+            List<Transaction> summaryTransactionList = new ArrayList<>(transactionDAO.selectAll());
+
+            if (testTransactionListOneType.containsAll(summaryTransactionList)){
                 System.out.println("Методы DAO работают нормально");
                 return true;
             } else {
@@ -59,9 +60,10 @@ public class TestTransactionDAO {
         ScriptExecutor scriptExecutor = new ScriptExecutor();
         scriptExecutor.executeSQL(deleteDBPath, properties);
         scriptExecutor.executeSQL(createDBPath, properties);
+        scriptExecutor.executeSQL(initDBPath,properties);
     }
 
-    private static boolean testConnect() throws IOException {
+    private static boolean testConnect(){
         Properties property = PropertyLoader.load(propertiesPath);
         try (Connection con = TransactionDAO.connect(property)) {
             System.out.println("Подключение к БД установлено");
