@@ -50,10 +50,7 @@ public class TransactionService {
     public void getSummaryOfValue(HttpServletResponse resp){
         try {
             long res = transactionDAO.selectAll().stream()
-                    .collect(Collectors.toMap(Transaction::getId, Transaction::getValue))
-                    .values()
-                    .stream()
-                    .mapToLong((s) -> Long.parseLong(String.valueOf(s))).sum();
+                    .mapToLong(transaction->Long.parseLong(String.valueOf(transaction.getValue()))).sum();
             getAll(resp);
             servletWriter("Summary of Transaction values: " + res, resp);
         } catch (SQLException throwable) {
