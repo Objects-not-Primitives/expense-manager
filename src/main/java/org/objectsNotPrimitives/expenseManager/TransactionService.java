@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Objects;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class TransactionService {
@@ -40,6 +41,21 @@ public class TransactionService {
             servletWriter(transactionDAO.selectAll().stream()
                     .map(this::transactionToJson)
                     .collect(Collectors.joining(System.lineSeparator())), resp);
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+            servletWriter("No connection to database", resp);
+        }
+    }
+
+    public void getSummaryOfValue(HttpServletResponse resp){
+        try {
+            long res = transactionDAO.selectAll().stream()
+                    .collect(Collectors.toMap(Transaction::getId, Transaction::getValue))
+                    .values()
+                    .stream()
+                    .mapToLong((s) -> Long.parseLong(String.valueOf(s))).sum();
+            getAll(resp);
+            servletWriter("Summary of Transaction values: " + res, resp);
         } catch (SQLException throwable) {
             throwable.printStackTrace();
             servletWriter("No connection to database", resp);
