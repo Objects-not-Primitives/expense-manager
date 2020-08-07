@@ -32,7 +32,7 @@ public class TestSorterService {
         List<String> stringList = new ArrayList<>();
         sorterService.getSortMap().get("type").map(Transaction::getPurpose).forEach(stringList::add);
         if (stringList.get(1).equals("x5") && stringList.get(7).equals("x7")) {
-            System.out.println("Сортировка работае");
+            System.out.println("Сортировка работает");
             return true;
         } else {
             System.out.println("Тест не пройден, сортировка не работает");
