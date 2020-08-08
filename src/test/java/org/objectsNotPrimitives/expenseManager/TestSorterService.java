@@ -7,6 +7,7 @@ import org.objectsNotPrimitives.expenseManager.service.SorterService;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TestSorterService {
     public static void main(String[] args) {
@@ -32,10 +33,11 @@ public class TestSorterService {
         testTransactionList.add(testTransaction6);
         testTransactionList.add(testTransaction7);
         testTransactionList.add(testTransaction8);
-        SorterService sorterService = new SorterService(testTransactionList);
-        List<String> stringList = new ArrayList<>();
-        sorterService.getSortMap().get("type").map(Transaction::getPurpose).forEach(stringList::add);
-        if (stringList.get(1).equals("x5") && stringList.get(7).equals("x7")) {
+        SorterService sorterService = new SorterService();
+        List<Transaction> stringList = testTransactionList.stream()
+                .sorted(sorterService.getComparator("type"))
+                .collect(Collectors.toList());
+        if (stringList.get(1).equals(testTransaction5) && stringList.get(7).equals(testTransaction7)) {
             System.out.println("Sorter test passed");
             return true;
         } else {
