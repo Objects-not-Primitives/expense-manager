@@ -12,7 +12,7 @@ import java.util.Properties;
 public class TransactionDAO implements AutoCloseable {
 
     private static TransactionDAO instance;
-    private Connection connectWay;
+    private final Connection connectWay;
 
     private TransactionDAO(Connection connectWay) {
         this.connectWay = connectWay;
@@ -52,11 +52,16 @@ public class TransactionDAO implements AutoCloseable {
 
     public void updateTypeRecord(List<Transaction> list, String type) throws SQLException {
         String sqlCommand = "update transaction set types = ? where id = ?";
-        for (Transaction transaction : list)
             try (PreparedStatement preparedStatement = connectWay.prepareStatement(sqlCommand)) {
                 preparedStatement.setString(1, type);
-                preparedStatement.setInt(2, transaction.getId());
                 int i = preparedStatement.executeUpdate();
+                list.stream().map(Transaction::getId).forEach(t-> {
+                    try {
+                        preparedStatement.setInt(2, t);
+                    } catch (SQLException throwable) {
+                        throwable.printStackTrace();
+                    }
+                });
             }
     }
 
