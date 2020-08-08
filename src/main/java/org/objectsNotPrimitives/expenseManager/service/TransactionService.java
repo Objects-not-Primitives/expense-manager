@@ -6,15 +6,15 @@ import org.objectsNotPrimitives.expenseManager.utils.PropertyLoader;
 import org.objectsNotPrimitives.expenseManager.model.Transaction;
 import org.objectsNotPrimitives.expenseManager.dao.TransactionDAO;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class TransactionService {
     private static final ObjectMapper mapper = new ObjectMapper();
     private static final String propertiesPath = "application.properties";
+    private static String respString;
 
     private TransactionDAO transactionDAO;
 
@@ -27,89 +27,92 @@ public class TransactionService {
         }
     }
 
-    public void getOne(String id, HttpServletResponse resp) {
+    public String getOne(String id) {
         try {
-            transactionDAO.selectOne(Integer.parseInt(id)).ifPresentOrElse
-                    (employeeFunc -> servletWriter(transactionToJson(employeeFunc), resp),
-                            () -> servletWriter("There is no transaction with such id", resp));
+             Optional<Transaction> optionalTransaction = transactionDAO.selectOne(Integer.parseInt(id));
+                    if( optionalTransaction.isPresent()) {
+                        respString = transactionToJson(optionalTransaction.get());
+                    }else{
+                        respString = "There is no transaction with such id";
+                    }
         } catch (SQLException throwable) {
             throwable.printStackTrace();
-            servletWriter("No connection to database", resp);
+           respString = "No connection to database";
         }
+        return respString;
     }
 
-    public void getAll(HttpServletResponse resp) {
+    public String getAll() {
         try {
-            servletWriter(transactionDAO.selectAll()
+            respString = transactionDAO.selectAll()
                     .map(this::transactionToJson)
-                    .collect(Collectors.joining(System.lineSeparator())), resp);
+                    .collect(Collectors.joining(System.lineSeparator()));
         } catch (SQLException throwable) {
             throwable.printStackTrace();
-            servletWriter("No connection to database", resp);
+            respString = "No connection to database";
         }
+        return respString;
     }
 
-    public void getSummaryOfValue(HttpServletResponse resp){
+    public String getSummaryOfValue(){
         try {
-            long res = transactionDAO.selectAll()
+            respString ="Summary of Transaction values: " + transactionDAO.selectAll()
                     .mapToLong(Transaction::getValue).sum();
-            getAll(resp);
-            servletWriter("Summary of Transaction values: " + res, resp);
         } catch (SQLException throwable) {
             throwable.printStackTrace();
-            servletWriter("No connection to database", resp);
+            respString = "No connection to database";
         }
+        return respString;
     }
 
-    public void post(String jsonString, HttpServletResponse resp) {
+    public String post(String jsonString) {
         try {
             transactionDAO.insertRecord(Objects.requireNonNull(jsonToTransaction(jsonString)));
-            servletWriter("New transaction added", resp);
+            respString = "New transaction added";
         } catch (SQLException throwable) {
             throwable.printStackTrace();
-            servletWriter("No connection to database", resp);
+            respString ="No connection to database";
         }
+        return respString;
     }
 
-    public void put(String jsonString, HttpServletResponse resp) {
+    public String put(String jsonString) {
         try {
             transactionDAO.updateRecord(Objects.requireNonNull(jsonToTransaction(jsonString)));
+            respString = "Transaction updated";
         } catch (SQLException throwable) {
             throwable.printStackTrace();
-            servletWriter("No connection to database", resp);
+            respString ="No connection to database";
         }
+        return respString;
     }
 
-    public void delete(int id, HttpServletResponse resp) {
+    public String delete(int id) {
         try {
             transactionDAO.deleteRecord(id);
+            respString = "Transaction deleted";
         } catch (SQLException throwable) {
             throwable.printStackTrace();
-            servletWriter("No connection to database", resp);
+            respString ="No connection to database";
         }
+        return respString;
     }
 
-    public void getSortedTransactions(String sortType, HttpServletResponse resp) {
+    public String getSortedTransactions(String sortType) {
         try {
             SorterService sorterService = new SorterService ();
-            servletWriter(transactionDAO.selectAll()
+            respString = transactionDAO.selectAll()
                     .sorted(sorterService.getComparator(sortType))
                     .map(this::transactionToJson)
-                    .collect(Collectors.joining(System.lineSeparator())), resp);
+                    .collect(Collectors.joining(System.lineSeparator()));
         } catch (SQLException throwable) {
             throwable.printStackTrace();
-            servletWriter("No connection to database", resp);
+            respString ="No connection to database";
         }
+        return respString;
     }
 
-    public void servletWriter(String text, HttpServletResponse resp) {
-        try {
-            resp.getWriter().println(text);
-        } catch (IOException e) {
-            System.out.println("Output problems");
-            e.printStackTrace();
-        }
-    }
+
 
     private String transactionToJson(Transaction transaction) {
         try {

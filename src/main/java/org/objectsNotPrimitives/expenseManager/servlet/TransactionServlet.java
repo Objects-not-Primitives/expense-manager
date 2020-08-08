@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @WebServlet(urlPatterns = {"/first-servlet/*"})
@@ -15,19 +16,18 @@ public class TransactionServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
-        String id = (req.getParameter("id"));
-        String sortType = (req.getParameter("sortType"));
-        String sumOp = (req.getParameter("sumOp"));
-        if (id == null) {
-            transactionService.getAll(resp);
+        Map<String, String[]> params = req.getParameterMap();
+
+        if (params.keySet().size() == 1) {
+            if (params.containsKey("id")) {
+                servletWriter(transactionService.getOne(req.getParameter("id")), resp);
+            } else if (params.containsKey("sortType")) {
+                servletWriter(transactionService.getSortedTransactions(req.getParameter("sortType")), resp);
+            } else if (params.containsKey("sumOp")) {
+                servletWriter(transactionService.getSummaryOfValue(), resp);
+            }
         } else {
-            transactionService.getOne(id, resp);
-        }
-        if (sortType != null){
-            transactionService.getSortedTransactions(sortType,resp);
-        }
-        if (sumOp != null){
-            transactionService.getSummaryOfValue(resp);
+            servletWriter(transactionService.getAll(), resp);
         }
     }
 
@@ -36,9 +36,9 @@ public class TransactionServlet extends HttpServlet {
         try {
             String jsonString = req.getReader().lines()
                     .collect(Collectors.joining(System.lineSeparator()));
-            transactionService.post(jsonString, resp);
+            servletWriter(transactionService.post(jsonString),resp);
         } catch (IOException e) {
-            transactionService.servletWriter("Invalid HTTP request", resp);
+            servletWriter("Invalid HTTP request", resp);
             e.printStackTrace();
         }
     }
@@ -48,9 +48,9 @@ public class TransactionServlet extends HttpServlet {
         try {
             String jsonString = req.getReader().lines()
                     .collect(Collectors.joining(System.lineSeparator()));
-            transactionService.put(jsonString, resp);
+            servletWriter(transactionService.put(jsonString),resp);
         } catch (IOException e) {
-            transactionService.servletWriter("Invalid HTTP request", resp);
+            servletWriter("Invalid HTTP request", resp);
             e.printStackTrace();
         }
     }
@@ -58,7 +58,16 @@ public class TransactionServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
         int id = Integer.parseInt(req.getParameter("id"));
-        transactionService.delete(id, resp);
+        servletWriter(transactionService.delete(id), resp);
+    }
+
+    public void servletWriter(String text, HttpServletResponse resp) {
+        try {
+            resp.getWriter().println(text);
+        } catch (IOException e) {
+            System.out.println("Output problems");
+            e.printStackTrace();
+        }
     }
 }
 

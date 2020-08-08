@@ -66,6 +66,7 @@ public class TestTransactionDAO {
     private static void execScripts() throws IOException {
         Properties properties = PropertyLoader.load(propertiesPath);
         ScriptExecutor scriptExecutor = new ScriptExecutor();
+        assert properties != null;
         scriptExecutor.executeSQL(deleteDBPath, properties);
         scriptExecutor.executeSQL(createDBPath, properties);
         scriptExecutor.executeSQL(initDBPath,properties);
