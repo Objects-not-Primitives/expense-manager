@@ -52,10 +52,10 @@ public class TestTransactionDAO {
             List<Transaction> summaryTransactionList = new ArrayList<>(transactionDAO.selectAll());
 
             if (testTransactionListOneType.containsAll(summaryTransactionList)){
-                System.out.println("Методы DAO работают нормально");
+                System.out.println("DAO methods test passed");
                 return true;
             } else {
-                System.out.println("Методы DAO не работают");
+                System.out.println("DAO methods test not passed");
                 return false;
             }
         }
@@ -72,11 +72,11 @@ public class TestTransactionDAO {
     private static boolean testConnect(){
         Properties property = PropertyLoader.load(propertiesPath);
         try (Connection con = TransactionDAO.connect(property)) {
-            System.out.println("Подключение к БД установлено");
+            System.out.println("Connected to the database");
             return true;
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("Подключение к БД отсутствует");
+            System.out.println("There is no connection to the database");
             return false;
         }
     }
