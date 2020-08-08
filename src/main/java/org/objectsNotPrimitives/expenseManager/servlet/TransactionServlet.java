@@ -16,10 +16,18 @@ public class TransactionServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         String id = (req.getParameter("id"));
+        String sortType = (req.getParameter("sortType"));
+        String sumOp = (req.getParameter("sumOp"));
         if (id == null) {
             transactionService.getAll(resp);
         } else {
             transactionService.getOne(id, resp);
+        }
+        if (sortType != null){
+            transactionService.getSortedTransactions(sortType,resp);
+        }
+        if (sumOp != null){
+            transactionService.getSummaryOfValue(resp);
         }
     }
 
