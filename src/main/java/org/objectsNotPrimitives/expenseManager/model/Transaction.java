@@ -3,7 +3,7 @@ package org.objectsNotPrimitives.expenseManager.model;
 import java.sql.Date;
 import java.util.Objects;
 
-public class Transaction implements Comparable<Transaction> {
+public class Transaction{
 
     private Integer id;
     private Long value;
@@ -58,16 +58,5 @@ public class Transaction implements Comparable<Transaction> {
     public int hashCode() {
         return Objects.hash(id, value, date, purpose, type);
     }
-
-    @Override
-    public int compareTo(Transaction o) {
-        int result = this.value.compareTo(o.value);
-        if (result == 0) {
-            result = this.date.compareTo(o.date);
-            if (result == 0) {
-                result = this.type.compareTo(o.type);
-            }
-        }
-        return result;
-    }
 }
+
