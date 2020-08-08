@@ -8,7 +8,6 @@ import org.objectsNotPrimitives.expenseManager.utils.ScriptExecutor;
 
 import java.io.IOException;
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
@@ -29,20 +28,17 @@ public class TestTransactionDAO {
         Properties property = PropertyLoader.load(propertiesPath);
 
         try (TransactionDAO transactionDAO = TransactionDAO.getInstance(property)) {
-            List<Transaction> testTransactionList = new ArrayList<>();
-            Transaction testTransaction1 = new Transaction(11, 2500L, Date.valueOf("2020-12-12"), "xz", TypesOfExpenses.FOOD);
-            Transaction testTransaction2 = new Transaction(12, 2501L, Date.valueOf("2020-12-13"), "xz2", TypesOfExpenses.OTHER);
-            Transaction testTransaction3 = new Transaction(13, 2502L, Date.valueOf("2020-12-13"), "xz3", TypesOfExpenses.ENTERTAINMENT);
-            Transaction testTransaction4 = new Transaction(4, 2503L, Date.valueOf("2020-12-13"), "xz4", TypesOfExpenses.OTHER);
+            List<Transaction> testTransactionList = List.of(
+            new Transaction(11, 2500L, Date.valueOf("2020-12-12"), "xz", TypesOfExpenses.FOOD),
+            new Transaction(12, 2501L, Date.valueOf("2020-12-13"), "xz2", TypesOfExpenses.OTHER),
+            new Transaction(13, 2502L, Date.valueOf("2020-12-13"), "xz3", TypesOfExpenses.ENTERTAINMENT),
+            new Transaction(4, 2503L, Date.valueOf("2020-12-13"), "xz4", TypesOfExpenses.OTHER)
+            );
 
-            testTransactionList.add(testTransaction1);
-            testTransactionList.add(testTransaction2);
-            testTransactionList.add(testTransaction3);
-
-            transactionDAO.insertRecord(testTransaction1);
-            transactionDAO.insertRecord(testTransaction2);
-            transactionDAO.insertRecord(testTransaction3);
-            transactionDAO.updateRecord(testTransaction4);
+            transactionDAO.insertRecord(testTransactionList.get(0));
+            transactionDAO.insertRecord(testTransactionList.get(1));
+            transactionDAO.insertRecord(testTransactionList.get(2));
+            transactionDAO.updateRecord(testTransactionList.get(3));
             transactionDAO.deleteRecord(5);
             transactionDAO.updateTypeRecord(testTransactionList.stream(), TypesOfExpenses.FOOD.getTypesOfExpenses());
             transactionDAO.deleteTypeRecord(TypesOfExpenses.OTHER.getTypesOfExpenses());
