@@ -3,21 +3,20 @@ package org.objectsNotPrimitives.expenseManager.service;
 import org.objectsNotPrimitives.expenseManager.model.Transaction;
 
 import java.util.*;
-import java.util.stream.*;
 
 public class SorterService {
 
-    private final HashMap<String, Stream<Transaction>> sortMap;
+    private final Map<String, Comparator<Transaction>> fieldToComparator;
 
-    public SorterService(List<Transaction> transactionList) {
-        HashMap<String, Stream<Transaction>> stringFunctionHashMap = new HashMap<>();
-        stringFunctionHashMap.put("value", transactionList.stream().sorted(Comparator.comparing(Transaction::getValue)));
-        stringFunctionHashMap.put("date", transactionList.stream().sorted(Comparator.comparing(Transaction::getDate)));
-        stringFunctionHashMap.put("type", transactionList.stream().sorted(Comparator.comparing(Transaction::getType)));
-        this.sortMap = stringFunctionHashMap;
+    public SorterService() {
+        HashMap<String, Comparator<Transaction>> fieldToComparator = new HashMap<>();
+        fieldToComparator.put("value", Comparator.comparing(Transaction::getValue));
+        fieldToComparator.put("date", Comparator.comparing(Transaction::getDate));
+        fieldToComparator.put("type", Comparator.comparing(Transaction::getType));
+        this.fieldToComparator = fieldToComparator;
     }
 
-    public HashMap<String, Stream<Transaction>> getSortMap() {
-        return sortMap;
+    public Comparator<Transaction> getComparator(String keySort) {
+        return fieldToComparator.get(keySort);
     }
 }

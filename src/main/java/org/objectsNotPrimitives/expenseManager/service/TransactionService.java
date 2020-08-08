@@ -91,8 +91,9 @@ public class TransactionService {
 
     public void getSortedTransactions(String sortType, HttpServletResponse resp) {
         try {
-            SorterService sorterService = new SorterService (transactionDAO.selectAll());
-            servletWriter(sorterService.getSortMap().get(sortType)
+            SorterService sorterService = new SorterService ();
+            servletWriter(transactionDAO.selectAll().stream()
+                    .sorted(sorterService.getComparator(sortType))
                     .map(this::transactionToJson)
                     .collect(Collectors.joining(System.lineSeparator())), resp);
         } catch (SQLException throwable) {
