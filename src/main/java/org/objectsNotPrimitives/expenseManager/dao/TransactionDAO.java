@@ -93,8 +93,11 @@ public class TransactionDAO implements AutoCloseable {
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                Optional<Transaction> opt = Optional.of(new Transaction(resultSet.getInt("id"), resultSet.getLong("value"), resultSet.getDate("date"), resultSet.getString("purpose"), TypesOfExpenses.valueOf(resultSet.getString("types"))));
-                return opt;
+                return Optional.of(
+                        new Transaction(resultSet.getInt("id"), resultSet.getLong("value"),
+                        resultSet.getDate("date"), resultSet.getString("purpose"),
+                        TypesOfExpenses.valueOf(resultSet.getString("types")))
+                );
             }
             return Optional.empty();
         }
@@ -106,7 +109,9 @@ public class TransactionDAO implements AutoCloseable {
             preparedStatement.setString(1, type);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                employeesList.add(new Transaction(resultSet.getInt("id"), resultSet.getLong("value"), resultSet.getDate("date"), resultSet.getString("purpose"), TypesOfExpenses.valueOf(resultSet.getString("types"))));
+                employeesList.add(new Transaction(resultSet.getInt("id"), resultSet.getLong("value"),
+                        resultSet.getDate("date"), resultSet.getString("purpose"),
+                        TypesOfExpenses.valueOf(resultSet.getString("types"))));
             }
             return employeesList;
         }
@@ -118,7 +123,9 @@ public class TransactionDAO implements AutoCloseable {
             String sqlCommand = "SELECT * FROM transaction ";
             ResultSet resultSet = stmt.executeQuery(sqlCommand);
             while (resultSet.next()) {
-                employeesList.add(new Transaction(resultSet.getInt("id"), resultSet.getLong("value"), resultSet.getDate("date"), resultSet.getString("purpose"), TypesOfExpenses.valueOf(resultSet.getString("types"))));
+                employeesList.add(new Transaction(resultSet.getInt("id"), resultSet.getLong("value"),
+                        resultSet.getDate("date"), resultSet.getString("purpose"),
+                        TypesOfExpenses.valueOf(resultSet.getString("types"))));
             }
             return employeesList;
         }

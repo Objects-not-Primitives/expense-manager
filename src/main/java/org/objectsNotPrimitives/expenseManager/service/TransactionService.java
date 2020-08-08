@@ -52,7 +52,7 @@ public class TransactionService {
     public void getSummaryOfValue(HttpServletResponse resp){
         try {
             long res = transactionDAO.selectAll().stream()
-                    .mapToLong(transaction->Long.parseLong(String.valueOf(transaction.getValue()))).sum();
+                    .mapToLong(Transaction::getValue).sum();
             getAll(resp);
             servletWriter("Summary of Transaction values: " + res, resp);
         } catch (SQLException throwable) {
