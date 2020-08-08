@@ -11,6 +11,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 public class TestTransactionDAO {
     private static final String propertiesPath = "application.properties";
@@ -43,13 +44,14 @@ public class TestTransactionDAO {
             transactionDAO.insertRecord(testTransaction3);
             transactionDAO.updateRecord(testTransaction4);
             transactionDAO.deleteRecord(5);
-            transactionDAO.updateTypeRecord(testTransactionList,TypesOfExpenses.FOOD.getTypesOfExpenses());
+            transactionDAO.updateTypeRecord(testTransactionList.stream(),TypesOfExpenses.FOOD.getTypesOfExpenses());
             transactionDAO.deleteTypeRecord(TypesOfExpenses.OTHER.getTypesOfExpenses());
-
-            List<Transaction> testTransactionListOneType = transactionDAO.selectOneType(TypesOfExpenses.ENTERTAINMENT.getTypesOfExpenses());
-            List<Transaction> testTransactionListOtherType = transactionDAO.selectOneType(TypesOfExpenses.FOOD.getTypesOfExpenses());
+            List<Transaction> testTransactionListOneType = transactionDAO.selectOneType(TypesOfExpenses.ENTERTAINMENT.getTypesOfExpenses())
+                    .collect(Collectors.toList());
+            List<Transaction> testTransactionListOtherType = transactionDAO.selectOneType(TypesOfExpenses.FOOD.getTypesOfExpenses())
+                    .collect(Collectors.toList());
             testTransactionListOneType.addAll(testTransactionListOtherType);
-            List<Transaction> summaryTransactionList = new ArrayList<>(transactionDAO.selectAll());
+            List<Transaction> summaryTransactionList = transactionDAO.selectAll().collect(Collectors.toList());
 
             if (testTransactionListOneType.containsAll(summaryTransactionList)){
                 System.out.println("DAO methods test passed");

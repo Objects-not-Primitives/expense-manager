@@ -40,7 +40,7 @@ public class TransactionService {
 
     public void getAll(HttpServletResponse resp) {
         try {
-            servletWriter(transactionDAO.selectAll().stream()
+            servletWriter(transactionDAO.selectAll()
                     .map(this::transactionToJson)
                     .collect(Collectors.joining(System.lineSeparator())), resp);
         } catch (SQLException throwable) {
@@ -51,7 +51,7 @@ public class TransactionService {
 
     public void getSummaryOfValue(HttpServletResponse resp){
         try {
-            long res = transactionDAO.selectAll().stream()
+            long res = transactionDAO.selectAll()
                     .mapToLong(Transaction::getValue).sum();
             getAll(resp);
             servletWriter("Summary of Transaction values: " + res, resp);
@@ -92,7 +92,7 @@ public class TransactionService {
     public void getSortedTransactions(String sortType, HttpServletResponse resp) {
         try {
             SorterService sorterService = new SorterService ();
-            servletWriter(transactionDAO.selectAll().stream()
+            servletWriter(transactionDAO.selectAll()
                     .sorted(sorterService.getComparator(sortType))
                     .map(this::transactionToJson)
                     .collect(Collectors.joining(System.lineSeparator())), resp);

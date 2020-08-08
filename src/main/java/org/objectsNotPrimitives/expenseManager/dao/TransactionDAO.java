@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.stream.Stream;
 
 public class TransactionDAO implements AutoCloseable {
 
@@ -50,18 +51,20 @@ public class TransactionDAO implements AutoCloseable {
         }
     }
 
-    public void updateTypeRecord(List<Transaction> list, String type) throws SQLException {
+    public void updateTypeRecord(Stream<Transaction> transactionStream, String type) throws SQLException {
         String sqlCommand = "update transaction set types = ? where id = ?";
             try (PreparedStatement preparedStatement = connectWay.prepareStatement(sqlCommand)) {
                 preparedStatement.setString(1, type);
-                int i = preparedStatement.executeUpdate();
-                list.stream().map(Transaction::getId).forEach(t-> {
+
+                transactionStream.map(Transaction::getId).forEach(t-> {
                     try {
                         preparedStatement.setInt(2, t);
                     } catch (SQLException throwable) {
                         throwable.printStackTrace();
                     }
-                });
+                }
+                );
+                int i = preparedStatement.executeUpdate();
             }
     }
 
@@ -108,7 +111,7 @@ public class TransactionDAO implements AutoCloseable {
         }
     }
 
-    public List<Transaction> selectOneType(String type) throws SQLException {
+    public Stream<Transaction> selectOneType(String type) throws SQLException {
         try (PreparedStatement preparedStatement = connectWay.prepareStatement("SELECT * FROM transaction where types = ?")) {
             List<Transaction> employeesList = new ArrayList<>();
             preparedStatement.setString(1, type);
@@ -118,11 +121,11 @@ public class TransactionDAO implements AutoCloseable {
                         resultSet.getDate("date"), resultSet.getString("purpose"),
                         TypesOfExpenses.valueOf(resultSet.getString("types"))));
             }
-            return employeesList;
+            return employeesList.stream();
         }
     }
 
-    public List<Transaction> selectAll() throws SQLException {
+    public Stream<Transaction> selectAll() throws SQLException {
         try (Statement stmt = connectWay.createStatement()) {
             List<Transaction> employeesList = new ArrayList<>();
             String sqlCommand = "SELECT * FROM transaction ";
@@ -132,7 +135,7 @@ public class TransactionDAO implements AutoCloseable {
                         resultSet.getDate("date"), resultSet.getString("purpose"),
                         TypesOfExpenses.valueOf(resultSet.getString("types"))));
             }
-            return employeesList;
+            return employeesList.stream();
         }
     }
 
