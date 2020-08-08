@@ -36,7 +36,7 @@ public class TransactionServlet extends HttpServlet {
         try {
             String jsonString = req.getReader().lines()
                     .collect(Collectors.joining(System.lineSeparator()));
-            servletWriter(transactionService.post(jsonString),resp);
+            servletWriter(transactionService.post(jsonString), resp);
         } catch (IOException e) {
             servletWriter("Invalid HTTP request", resp);
             e.printStackTrace();
@@ -48,7 +48,7 @@ public class TransactionServlet extends HttpServlet {
         try {
             String jsonString = req.getReader().lines()
                     .collect(Collectors.joining(System.lineSeparator()));
-            servletWriter(transactionService.put(jsonString),resp);
+            servletWriter(transactionService.put(jsonString), resp);
         } catch (IOException e) {
             servletWriter("Invalid HTTP request", resp);
             e.printStackTrace();

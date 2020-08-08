@@ -44,7 +44,7 @@ public class TestTransactionDAO {
             transactionDAO.insertRecord(testTransaction3);
             transactionDAO.updateRecord(testTransaction4);
             transactionDAO.deleteRecord(5);
-            transactionDAO.updateTypeRecord(testTransactionList.stream(),TypesOfExpenses.FOOD.getTypesOfExpenses());
+            transactionDAO.updateTypeRecord(testTransactionList.stream(), TypesOfExpenses.FOOD.getTypesOfExpenses());
             transactionDAO.deleteTypeRecord(TypesOfExpenses.OTHER.getTypesOfExpenses());
             List<Transaction> testTransactionListOneType = transactionDAO.selectOneType(TypesOfExpenses.ENTERTAINMENT.getTypesOfExpenses())
                     .collect(Collectors.toList());
@@ -53,7 +53,7 @@ public class TestTransactionDAO {
             testTransactionListOneType.addAll(testTransactionListOtherType);
             List<Transaction> summaryTransactionList = transactionDAO.selectAll().collect(Collectors.toList());
 
-            if (testTransactionListOneType.containsAll(summaryTransactionList)){
+            if (testTransactionListOneType.containsAll(summaryTransactionList)) {
                 System.out.println("DAO methods test passed");
                 return true;
             } else {
@@ -69,10 +69,10 @@ public class TestTransactionDAO {
         assert properties != null;
         scriptExecutor.executeSQL(deleteDBPath, properties);
         scriptExecutor.executeSQL(createDBPath, properties);
-        scriptExecutor.executeSQL(initDBPath,properties);
+        scriptExecutor.executeSQL(initDBPath, properties);
     }
 
-    private static boolean testConnect(){
+    private static boolean testConnect() {
         Properties property = PropertyLoader.load(propertiesPath);
         try (Connection con = TransactionDAO.connect(property)) {
             System.out.println("Connected to the database");

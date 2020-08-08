@@ -53,19 +53,18 @@ public class TransactionDAO implements AutoCloseable {
 
     public void updateTypeRecord(Stream<Transaction> transactionStream, String type) throws SQLException {
         String sqlCommand = "update transaction set types = ? where id = ?";
-            try (PreparedStatement preparedStatement = connectWay.prepareStatement(sqlCommand)) {
-                preparedStatement.setString(1, type);
-
-                transactionStream.map(Transaction::getId).forEach(t-> {
-                    try {
-                        preparedStatement.setInt(2, t);
-                    } catch (SQLException throwable) {
-                        throwable.printStackTrace();
+        try (PreparedStatement preparedStatement = connectWay.prepareStatement(sqlCommand)) {
+            preparedStatement.setString(1, type);
+            transactionStream.map(Transaction::getId).forEach(t -> {
+                        try {
+                            preparedStatement.setInt(2, t);
+                        } catch (SQLException throwable) {
+                            throwable.printStackTrace();
+                        }
                     }
-                }
-                );
-                int i = preparedStatement.executeUpdate();
-            }
+            );
+            int i = preparedStatement.executeUpdate();
+        }
     }
 
     public void deleteRecord(int transactionId) throws SQLException {
@@ -103,8 +102,8 @@ public class TransactionDAO implements AutoCloseable {
             if (resultSet.next()) {
                 return Optional.of(
                         new Transaction(resultSet.getInt("id"), resultSet.getLong("value"),
-                        resultSet.getDate("date"), resultSet.getString("purpose"),
-                        TypesOfExpenses.valueOf(resultSet.getString("types")))
+                                resultSet.getDate("date"), resultSet.getString("purpose"),
+                                TypesOfExpenses.valueOf(resultSet.getString("types")))
                 );
             }
             return Optional.empty();

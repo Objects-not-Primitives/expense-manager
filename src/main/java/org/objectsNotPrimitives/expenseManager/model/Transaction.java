@@ -3,7 +3,7 @@ package org.objectsNotPrimitives.expenseManager.model;
 import java.sql.Date;
 import java.util.Objects;
 
-public class Transaction{
+public class Transaction {
 
     private Integer id;
     private Long value;
