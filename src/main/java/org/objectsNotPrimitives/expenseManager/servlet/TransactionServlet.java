@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
-@WebServlet(urlPatterns = {"/first-servlet/*"})
+@WebServlet(urlPatterns = {"/transaction/*"})
 public class TransactionServlet extends HttpServlet {
     private static final TransactionService transactionService = new TransactionService();
 
