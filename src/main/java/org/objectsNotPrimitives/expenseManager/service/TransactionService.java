@@ -7,7 +7,6 @@ import org.objectsNotPrimitives.expenseManager.model.Transaction;
 import org.objectsNotPrimitives.expenseManager.dao.TransactionDAO;
 
 import java.sql.SQLException;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -29,15 +28,15 @@ public class TransactionService {
 
     public String getOne(String id) {
         try {
-             Optional<Transaction> optionalTransaction = transactionDAO.selectOne(Integer.parseInt(id));
-                    if( optionalTransaction.isPresent()) {
-                        respString = transactionToJson(optionalTransaction.get());
-                    }else{
-                        respString = "There is no transaction with such id";
-                    }
+            Optional<Transaction> optionalTransaction = transactionDAO.selectOne(Integer.parseInt(id));
+            if (optionalTransaction.isPresent()) {
+                respString = transactionToJson(optionalTransaction.get());
+            } else {
+                respString = "There is no transaction with such id";
+            }
         } catch (SQLException throwable) {
             throwable.printStackTrace();
-           respString = "No connection to database";
+            respString = "No connection to database";
         }
         return respString;
     }
@@ -54,9 +53,9 @@ public class TransactionService {
         return respString;
     }
 
-    public String getSummaryOfValue(){
+    public String getSummaryOfValue() {
         try {
-            respString ="Summary of Transaction values: " + transactionDAO.selectAll()
+            respString = "Summary of Transaction values: " + transactionDAO.selectAll()
                     .mapToLong(Transaction::getValue).sum();
         } catch (SQLException throwable) {
             throwable.printStackTrace();
@@ -67,22 +66,32 @@ public class TransactionService {
 
     public String post(String jsonString) {
         try {
-            transactionDAO.insertRecord(Objects.requireNonNull(jsonToTransaction(jsonString)));
-            respString = "New transaction added";
+            Optional<Transaction> optionalTransaction = jsonToTransaction(jsonString);
+            if (optionalTransaction.isPresent()) {
+                transactionDAO.insertRecord(optionalTransaction.get());
+                respString = "New transaction added";
+            } else {
+                respString = "Didn't get valid Transaction";
+            }
         } catch (SQLException throwable) {
             throwable.printStackTrace();
-            respString ="No connection to database";
+            respString = "No connection to database";
         }
         return respString;
     }
 
     public String put(String jsonString) {
         try {
-            transactionDAO.updateRecord(Objects.requireNonNull(jsonToTransaction(jsonString)));
-            respString = "Transaction updated";
+            Optional<Transaction> optionalTransaction = jsonToTransaction(jsonString);
+            if (optionalTransaction.isPresent()) {
+                transactionDAO.updateRecord(optionalTransaction.get());
+                respString = "Transaction updated";
+            } else {
+                respString = "Didn't get valid Transaction";
+            }
         } catch (SQLException throwable) {
             throwable.printStackTrace();
-            respString ="No connection to database";
+            respString = "No connection to database";
         }
         return respString;
     }
@@ -93,25 +102,24 @@ public class TransactionService {
             respString = "Transaction deleted";
         } catch (SQLException throwable) {
             throwable.printStackTrace();
-            respString ="No connection to database";
+            respString = "No connection to database";
         }
         return respString;
     }
 
     public String getSortedTransactions(String sortType) {
         try {
-            SorterService sorterService = new SorterService ();
+            SorterService sorterService = new SorterService();
             respString = transactionDAO.selectAll()
                     .sorted(sorterService.getComparator(sortType))
                     .map(this::transactionToJson)
                     .collect(Collectors.joining(System.lineSeparator()));
         } catch (SQLException throwable) {
             throwable.printStackTrace();
-            respString ="No connection to database";
+            respString = "No connection to database";
         }
         return respString;
     }
-
 
 
     private String transactionToJson(Transaction transaction) {
@@ -119,17 +127,17 @@ public class TransactionService {
             return mapper.writeValueAsString(transaction);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
-            return "Problems encountered when processing (parsing, generating) JSON content";
+            return "";
         }
     }
 
-    private Transaction jsonToTransaction(String jsonString) {
+    private Optional<Transaction> jsonToTransaction(String jsonString) {
         try {
-            return mapper.readValue(jsonString, Transaction.class);
+            return Optional.of(mapper.readValue(jsonString, Transaction.class));
         } catch (JsonProcessingException e) {
             e.printStackTrace();
             System.out.println("Problems encountered when processing (parsing, generating) JSON content");
-            return null;
+            return Optional.empty();
         }
     }
 }
