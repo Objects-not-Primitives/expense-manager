@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @WebServlet(urlPatterns = {"/first-servlet/*"})
@@ -16,18 +15,27 @@ public class TransactionServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
-        Map<String, String[]> params = req.getParameterMap();
-
-        if (params.keySet().size() == 1) {
-            if (params.containsKey("id")) {
+        switch (req.getPathInfo()) {
+            case ("/getByID/"): {
                 servletWriter(transactionService.getOne(req.getParameter("id")), resp);
-            } else if (params.containsKey("sortType")) {
-                servletWriter(transactionService.getSortedTransactions(req.getParameter("sortType")), resp);
-            } else if (params.containsKey("sumOp")) {
-                servletWriter(transactionService.getSummaryOfValue(), resp);
+                break;
             }
-        } else {
-            servletWriter(transactionService.getAll(), resp);
+            case ("/getBySortType/"): {
+                servletWriter(transactionService.getSortedTransactions(req.getParameter("sortType")), resp);
+                break;
+            }
+            case ("/getSum/"): {
+                servletWriter(transactionService.getSummaryOfValue(), resp);
+                break;
+            }
+            case ("/getAll/"): {
+                servletWriter(transactionService.getAll(), resp);
+                break;
+            }
+            default: {
+                servletWriter("Not existing path", resp);
+                break;
+            }
         }
     }
 
@@ -36,7 +44,7 @@ public class TransactionServlet extends HttpServlet {
         try {
             String jsonString = req.getReader().lines()
                     .collect(Collectors.joining(System.lineSeparator()));
-            servletWriter(transactionService.post(jsonString),resp);
+            servletWriter(transactionService.post(jsonString), resp);
         } catch (IOException e) {
             servletWriter("Invalid HTTP request", resp);
             e.printStackTrace();
@@ -45,10 +53,11 @@ public class TransactionServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) {
+
         try {
             String jsonString = req.getReader().lines()
                     .collect(Collectors.joining(System.lineSeparator()));
-            servletWriter(transactionService.put(jsonString),resp);
+            servletWriter(transactionService.put(jsonString), resp);
         } catch (IOException e) {
             servletWriter("Invalid HTTP request", resp);
             e.printStackTrace();
