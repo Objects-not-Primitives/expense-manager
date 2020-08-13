@@ -124,6 +124,9 @@ public class TransactionService {
         } catch (SQLException throwable) {
             throwable.printStackTrace();
             respString = "No connection to database";
+        } catch (NullPointerException throwable) {
+            throwable.printStackTrace();
+            respString = "There is no such sortType";
         }
         return respString;
     }

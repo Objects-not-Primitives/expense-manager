@@ -28,7 +28,7 @@ public class TransactionServlet extends HttpServlet {
                 if (req.getParameter("sortType") != null) {
                     servletWriter(transactionService.getSortedTransactions(req.getParameter("sortType")), resp);
                 } else {
-                    servletWriter("There is no id parameter", resp);
+                    servletWriter("There is no sortType parameter", resp);
                 }
                 break;
             }
