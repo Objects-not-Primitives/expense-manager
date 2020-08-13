@@ -17,7 +17,10 @@ public class TransactionServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         switch (req.getPathInfo()) {
             case ("/getByID/"): {
-                servletWriter(transactionService.getOne(req.getParameter("id")), resp);
+                if (req.getParameter("id") != null){
+                    servletWriter(transactionService.getOne(req.getParameter("id")), resp);
+                } else {
+                    servletWriter("There is no id parameter", resp);}
                 break;
             }
             case ("/getBySortType/"): {
@@ -33,7 +36,7 @@ public class TransactionServlet extends HttpServlet {
                 break;
             }
             default: {
-                servletWriter("Not existing path", resp);
+                servletWriter("Non-existing path", resp);
                 break;
             }
         }

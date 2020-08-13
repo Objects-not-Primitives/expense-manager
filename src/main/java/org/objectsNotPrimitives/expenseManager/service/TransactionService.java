@@ -28,6 +28,13 @@ public class TransactionService {
 
     public String getOne(String id) {
         try {
+            try {
+                Integer.parseInt(id);
+            } catch (NumberFormatException throwable) {
+                throwable.printStackTrace();
+                respString = "Id is not an integer";
+                return respString;
+            }
             Optional<Transaction> optionalTransaction = transactionDAO.selectOne(Integer.parseInt(id));
             if (optionalTransaction.isPresent()) {
                 respString = transactionToJson(optionalTransaction.get());
