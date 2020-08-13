@@ -17,14 +17,19 @@ public class TransactionServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         switch (req.getPathInfo()) {
             case ("/getByID/"): {
-                if (req.getParameter("id") != null){
+                if (req.getParameter("id") != null) {
                     servletWriter(transactionService.getOne(req.getParameter("id")), resp);
                 } else {
-                    servletWriter("There is no id parameter", resp);}
+                    servletWriter("There is no id parameter", resp);
+                }
                 break;
             }
             case ("/getBySortType/"): {
-                servletWriter(transactionService.getSortedTransactions(req.getParameter("sortType")), resp);
+                if (req.getParameter("sortType") != null) {
+                    servletWriter(transactionService.getSortedTransactions(req.getParameter("sortType")), resp);
+                } else {
+                    servletWriter("There is no id parameter", resp);
+                }
                 break;
             }
             case ("/getSum/"): {
