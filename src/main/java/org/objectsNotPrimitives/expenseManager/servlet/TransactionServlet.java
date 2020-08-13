@@ -16,7 +16,7 @@ public class TransactionServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         switch (req.getPathInfo()) {
-            case ("/getByID/"): {
+            case ("/"): {
                 if (req.getParameter("id") != null) {
                     servletWriter(transactionService.getOne(req.getParameter("id")), resp);
                 } else {
@@ -24,7 +24,7 @@ public class TransactionServlet extends HttpServlet {
                 }
                 break;
             }
-            case ("/getBySortType/"): {
+            case ("/sort/"): {
                 if (req.getParameter("sortType") != null) {
                     servletWriter(transactionService.getSortedTransactions(req.getParameter("sortType")), resp);
                 } else {
