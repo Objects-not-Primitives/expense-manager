@@ -9,6 +9,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
+import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
+
 @WebServlet(urlPatterns = {"/transaction/*"})
 public class TransactionServlet extends HttpServlet {
     private static final TransactionService transactionService = new TransactionService();
@@ -20,6 +23,7 @@ public class TransactionServlet extends HttpServlet {
                 if (req.getParameter("id") != null) {
                     servletWriter(transactionService.getOne(req.getParameter("id")), resp);
                 } else {
+                    resp.setStatus(SC_NOT_FOUND);
                     servletWriter("There is no id parameter", resp);
                 }
                 break;
@@ -28,6 +32,7 @@ public class TransactionServlet extends HttpServlet {
                 if (req.getParameter("sortType") != null) {
                     servletWriter(transactionService.getSortedTransactions(req.getParameter("sortType")), resp);
                 } else {
+                    resp.setStatus(SC_NOT_FOUND);
                     servletWriter("There is no sortType parameter", resp);
                 }
                 break;
@@ -37,6 +42,7 @@ public class TransactionServlet extends HttpServlet {
                     servletWriter(transactionService.getType(req.getParameter("getType")), resp);
 
                 } else {
+                    resp.setStatus(SC_NOT_FOUND);
                     servletWriter("There is no sortType parameter", resp);
                 }
                 break;
@@ -50,6 +56,7 @@ public class TransactionServlet extends HttpServlet {
                 break;
             }
             default: {
+                resp.setStatus(SC_NOT_FOUND);
                 servletWriter("Non-existing path", resp);
                 break;
             }
@@ -101,6 +108,7 @@ public class TransactionServlet extends HttpServlet {
         try {
             resp.getWriter().println(text);
         } catch (IOException e) {
+            resp.setStatus(SC_INTERNAL_SERVER_ERROR);
             System.out.println("Output problems");
             e.printStackTrace();
         }
