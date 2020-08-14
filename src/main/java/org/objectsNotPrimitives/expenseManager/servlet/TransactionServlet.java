@@ -32,6 +32,15 @@ public class TransactionServlet extends HttpServlet {
                 }
                 break;
             }
+            case ("/getType/"): {
+                if (req.getParameter("getType") != null) {
+                    servletWriter(transactionService.getType(req.getParameter("getType")), resp);
+
+                } else {
+                    servletWriter("There is no sortType parameter", resp);
+                }
+                break;
+            }
             case ("/getSum/"): {
                 servletWriter(transactionService.getSummaryOfValue(), resp);
                 break;
@@ -61,7 +70,6 @@ public class TransactionServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) {
-
         try {
             String jsonString = req.getReader().lines()
                     .collect(Collectors.joining(System.lineSeparator()));
@@ -74,8 +82,19 @@ public class TransactionServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
-        int id = Integer.parseInt(req.getParameter("id"));
-        servletWriter(transactionService.delete(id), resp);
+        if (req.getParameter("id") != null) {
+            int id = Integer.parseInt(req.getParameter("id"));
+            servletWriter(transactionService.delete(id), resp);
+        } else {
+            servletWriter("There is no sortType parameter", resp);
+        }
+
+        if (req.getParameter("type") != null) {
+            String type = req.getParameter("type");
+            servletWriter(transactionService.deleteType(type), resp);
+        } else {
+            servletWriter("There is no type parameter", resp);
+        }
     }
 
     public void servletWriter(String text, HttpServletResponse resp) {

@@ -48,6 +48,18 @@ public class TransactionService {
         return respString;
     }
 
+    public String getType(String type) {
+        try {
+            respString = transactionDAO.selectOneType(type)
+                    .map(this::transactionToJson)
+                    .collect(Collectors.joining(System.lineSeparator()));
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+            respString = "No connection to database";
+        }
+        return respString;
+    }
+
     public String getAll() {
         try {
             respString = transactionDAO.selectAll()
@@ -107,6 +119,17 @@ public class TransactionService {
         try {
             transactionDAO.deleteRecord(id);
             respString = "Transaction deleted";
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+            respString = "No connection to database";
+        }
+        return respString;
+    }
+
+    public String deleteType(String type) {
+        try {
+            transactionDAO.deleteTypeRecord(type);
+            respString = "Transactions deleted";
         } catch (SQLException throwable) {
             throwable.printStackTrace();
             respString = "No connection to database";
