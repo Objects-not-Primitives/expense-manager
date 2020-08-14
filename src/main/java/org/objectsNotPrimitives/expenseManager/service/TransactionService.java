@@ -7,6 +7,7 @@ import org.objectsNotPrimitives.expenseManager.model.Transaction;
 import org.objectsNotPrimitives.expenseManager.dao.TransactionDAO;
 
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -114,6 +115,23 @@ public class TransactionService {
         }
         return respString;
     }
+
+    //Метод не тестировался
+    public String putType(String jsonString, String type) {
+        try {
+            Transaction[] transactions = mapper.readValue(jsonString, Transaction[].class);
+            transactionDAO.updateTypeRecord(Arrays.stream(transactions), type);
+            respString = "Transactions updated";
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+            respString = "No connection to database";
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            respString = "Didn't get valid Transactions";
+        }
+        return respString;
+    }
+
 
     public String delete(int id) {
         try {
