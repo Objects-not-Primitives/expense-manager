@@ -1,7 +1,5 @@
 package org.objectsNotPrimitives.expenseManager.servlet;
 
-import org.objectsNotPrimitives.expenseManager.service.TransactionService;
-
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -9,55 +7,39 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
-import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 
 @WebServlet(urlPatterns = {"/transaction/*"})
 public class TransactionServlet extends HttpServlet {
-    private static final TransactionService transactionService = new TransactionService();
+
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
+        ExceptionDispatcher exceptionDispatcher = new ExceptionDispatcher(resp);
         switch (req.getPathInfo()) {
             case ("/"): {
-                if (req.getParameter("id") != null) {
-                    servletWriter(transactionService.getOne(req.getParameter("id")), resp);
-                } else {
-                    resp.setStatus(SC_NOT_FOUND);
-                    servletWriter("There is no id parameter", resp);
-                }
+                exceptionDispatcher.getOne(req.getParameter("id"), resp);
                 break;
             }
             case ("/sort/"): {
-                if (req.getParameter("sortType") != null) {
-                    servletWriter(transactionService.getSortedTransactions(req.getParameter("sortType")), resp);
-                } else {
-                    resp.setStatus(SC_NOT_FOUND);
-                    servletWriter("There is no sortType parameter", resp);
-                }
+                exceptionDispatcher.getSortedTransactions(req.getParameter("sortType"), resp);
                 break;
             }
             case ("/getType/"): {
-                if (req.getParameter("getType") != null) {
-                    servletWriter(transactionService.getType(req.getParameter("getType")), resp);
-
-                } else {
-                    resp.setStatus(SC_NOT_FOUND);
-                    servletWriter("There is no sortType parameter", resp);
-                }
+                exceptionDispatcher.getType(req.getParameter("getType"), resp);
                 break;
             }
             case ("/getSum/"): {
-                servletWriter(transactionService.getSummaryOfValue(), resp);
+                exceptionDispatcher.getSummaryOfValue(resp);
                 break;
             }
             case ("/getAll/"): {
-                servletWriter(transactionService.getAll(), resp);
+                exceptionDispatcher.getAll(resp);
                 break;
             }
             default: {
                 resp.setStatus(SC_NOT_FOUND);
-                servletWriter("Non-existing path", resp);
+                exceptionDispatcher.servletWriter("Non-existing path", resp);
                 break;
             }
         }
@@ -65,53 +47,36 @@ public class TransactionServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
+        ExceptionDispatcher exceptionDispatcher = new ExceptionDispatcher(resp);
         try {
             String jsonString = req.getReader().lines()
                     .collect(Collectors.joining(System.lineSeparator()));
-            servletWriter(transactionService.post(jsonString), resp);
+            exceptionDispatcher.post(jsonString, resp);
         } catch (IOException e) {
-            servletWriter("Invalid HTTP request", resp);
+            exceptionDispatcher.servletWriter("Invalid HTTP request", resp);
             e.printStackTrace();
         }
     }
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) {
+        ExceptionDispatcher exceptionDispatcher = new ExceptionDispatcher(resp);
         try {
             String jsonString = req.getReader().lines()
                     .collect(Collectors.joining(System.lineSeparator()));
-            servletWriter(transactionService.put(jsonString), resp);
+            exceptionDispatcher.put(jsonString, resp);
         } catch (IOException e) {
-            servletWriter("Invalid HTTP request", resp);
+            exceptionDispatcher.servletWriter("Invalid HTTP request", resp);
             e.printStackTrace();
         }
     }
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
-        if (req.getParameter("id") != null) {
-            int id = Integer.parseInt(req.getParameter("id"));
-            servletWriter(transactionService.delete(id), resp);
-        } else {
-            servletWriter("There is no sortType parameter", resp);
-        }
-
-        if (req.getParameter("type") != null) {
-            String type = req.getParameter("type");
-            servletWriter(transactionService.deleteType(type), resp);
-        } else {
-            servletWriter("There is no type parameter", resp);
-        }
+        ExceptionDispatcher exceptionDispatcher = new ExceptionDispatcher(resp);
+        exceptionDispatcher.delete(req.getParameter("id"), resp);
+        exceptionDispatcher.deleteType(req.getParameter("type"), resp);
     }
 
-    public void servletWriter(String text, HttpServletResponse resp) {
-        try {
-            resp.getWriter().println(text);
-        } catch (IOException e) {
-            resp.setStatus(SC_INTERNAL_SERVER_ERROR);
-            System.out.println("Output problems");
-            e.printStackTrace();
-        }
-    }
 }
 
