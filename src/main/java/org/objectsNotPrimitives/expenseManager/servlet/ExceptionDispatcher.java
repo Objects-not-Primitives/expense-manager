@@ -1,6 +1,7 @@
 package org.objectsNotPrimitives.expenseManager.servlet;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.objectsNotPrimitives.expenseManager.model.TypesOfExpenses;
 import org.objectsNotPrimitives.expenseManager.service.TransactionService;
 
 import javax.servlet.http.HttpServletResponse;
@@ -54,10 +55,15 @@ public class ExceptionDispatcher {
     public void getType(String type, HttpServletResponse resp) {
         if (type != null) {
             try {
+                TypesOfExpenses.valueOf(type);
                 servletWriter(transactionService.getType(type), resp);
             } catch (SQLException throwable) {
                 throwable.printStackTrace();
                 servletWriter("No connection to database", resp);
+                resp.setStatus(SC_NOT_FOUND);
+            }  catch (IllegalArgumentException throwable) {
+                throwable.printStackTrace();
+                servletWriter("Non-existing type param", resp);
                 resp.setStatus(SC_NOT_FOUND);
             }
         } else {
@@ -106,9 +112,9 @@ public class ExceptionDispatcher {
         try {
             respString = transactionService.put(jsonString);
             if (!respString.equals("")) {
-                respString = "Transaction updated";
+                servletWriter(respString,resp);
             } else {
-                respString = "Didn't get valid Transaction";
+                servletWriter("Didn't get valid Transaction",resp);
             }
         } catch (SQLException throwable) {
             throwable.printStackTrace();
