@@ -28,7 +28,7 @@ public class TestSorterService {
         List<Transaction> stringList = testTransactionList.stream()
                 .sorted(sorterService.getComparator("type"))
                 .collect(Collectors.toList());
-        if (stringList.get(1).equals(testTransactionList.get(2)) && stringList.get(7).equals(testTransactionList.get(1))) {
+        if (stringList.get(0).equals(testTransactionList.get(0)) && stringList.get(4).equals(testTransactionList.get(1))) {
             System.out.println("Sorter test passed");
             return true;
         } else {

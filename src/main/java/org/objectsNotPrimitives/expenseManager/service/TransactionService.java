@@ -23,7 +23,6 @@ public class TransactionService {
     }
 
     public String getOne(String id) throws SQLException, NumberFormatException {
-
         Optional<Transaction> optionalTransaction = transactionDAO.selectOne(Integer.parseInt(id));
         if (optionalTransaction.isPresent()) {
             respString = transactionToJson(optionalTransaction.get());
@@ -95,7 +94,6 @@ public class TransactionService {
     }
 
     public String getSortedTransactions(String sortType) throws SQLException {
-
         SorterService sorterService = new SorterService();
         respString = transactionDAO.selectAll()
                 .sorted(sorterService.getComparator(sortType))

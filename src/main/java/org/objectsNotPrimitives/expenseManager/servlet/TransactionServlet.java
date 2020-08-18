@@ -74,9 +74,14 @@ public class TransactionServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
         ExceptionDispatcher exceptionDispatcher = new ExceptionDispatcher(resp);
-        exceptionDispatcher.delete(req.getParameter("id"), resp);
-        exceptionDispatcher.deleteType(req.getParameter("type"), resp);
+        if (req.getParameterMap().containsKey("id")) {
+            exceptionDispatcher.delete(req.getParameter("id"), resp);
+        } else if (req.getParameterMap().containsKey("type")) {
+            exceptionDispatcher.deleteType(req.getParameter("type"), resp);
+        } else {
+            resp.setStatus(SC_NOT_FOUND);
+            exceptionDispatcher.servletWriter("Invalid HTTP request", resp);
+        }
     }
-
 }
 
