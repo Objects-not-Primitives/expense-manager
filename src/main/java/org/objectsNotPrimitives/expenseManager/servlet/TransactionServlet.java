@@ -16,31 +16,31 @@ public class TransactionServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
-        ResponseConstructor exceptionDispatcher = new ResponseConstructor(resp);
+        ResponseConstructor responseConstructor = new ResponseConstructor(resp);
         switch (req.getPathInfo()) {
             case ("/"): {
-                exceptionDispatcher.getOne(req.getParameter("id"), resp);
+                responseConstructor.getOne(req.getParameter("id"), resp);
                 break;
             }
             case ("/sort/"): {
-                exceptionDispatcher.getSortedTransactions(req.getParameter("sortType"), resp);
+                responseConstructor.getSortedTransactions(req.getParameter("sortType"), resp);
                 break;
             }
             case ("/getType/"): {
-                exceptionDispatcher.getType(req.getParameter("getType"), resp);
+                responseConstructor.getType(req.getParameter("getType"), resp);
                 break;
             }
             case ("/getSum/"): {
-                exceptionDispatcher.getSummaryOfValue(resp);
+                responseConstructor.getSummaryOfValue(resp);
                 break;
             }
             case ("/getAll/"): {
-                exceptionDispatcher.getAll(resp);
+                responseConstructor.getAll(resp);
                 break;
             }
             default: {
                 resp.setStatus(SC_NOT_FOUND);
-                exceptionDispatcher.servletWriter("Non-existing path", resp);
+                responseConstructor.servletWriter("Non-existing path", resp);
                 break;
             }
         }
@@ -60,30 +60,30 @@ public class TransactionServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) {
-        ResponseConstructor exceptionDispatcher = new ResponseConstructor(resp);
+        ResponseConstructor responseConstructor = new ResponseConstructor(resp);
         try {
             String jsonString = req.getReader().lines()
                     .collect(Collectors.joining(System.lineSeparator()));
-            exceptionDispatcher.put(jsonString, resp);
+            responseConstructor.put(jsonString, resp);
         } catch (IOException e) {
-            catchBadRequest(resp, exceptionDispatcher);
+            catchBadRequest(resp, responseConstructor);
         }
     }
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
-        ResponseConstructor exceptionDispatcher = new ResponseConstructor(resp);
+        ResponseConstructor responseConstructor = new ResponseConstructor(resp);
         if (req.getParameterMap().containsKey("id")) {
-            exceptionDispatcher.delete(req.getParameter("id"), resp);
+            responseConstructor.delete(req.getParameter("id"), resp);
         } else if (req.getParameterMap().containsKey("type")) {
-            exceptionDispatcher.deleteType(req.getParameter("type"), resp);
+            responseConstructor.deleteType(req.getParameter("type"), resp);
         } else {
-            catchBadRequest(resp, exceptionDispatcher);
+            catchBadRequest(resp, responseConstructor);
         }
     }
 
-    private void catchBadRequest(HttpServletResponse resp, ResponseConstructor exceptionDispatcher) {
-        exceptionDispatcher.servletWriter("Invalid HTTP request", resp);
+    private void catchBadRequest(HttpServletResponse resp, ResponseConstructor responseConstructor) {
+        responseConstructor.servletWriter("Invalid HTTP request", resp);
         resp.setStatus(SC_BAD_REQUEST);
     }
 }
