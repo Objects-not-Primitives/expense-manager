@@ -20,10 +20,8 @@ public class ExceptionDispatcher {
     public ExceptionDispatcher(HttpServletResponse resp) {
         try {
             this.transactionService = new TransactionService();
-        } catch (SQLException exception) {
-            exception.printStackTrace();
-            resp.setStatus(SC_INTERNAL_SERVER_ERROR);
-            servletWriter("No connection to database", resp);
+        } catch (SQLException throwable) {
+            getSQLException(resp, throwable);
         }
     }
 
@@ -38,13 +36,9 @@ public class ExceptionDispatcher {
                     servletWriter("There is no transaction with such id", resp);
                 }
             } catch (SQLException throwable) {
-                throwable.printStackTrace();
-                servletWriter("No connection to database", resp);
-                resp.setStatus(SC_INTERNAL_SERVER_ERROR);
+                getSQLException(resp, throwable);
             } catch (NumberFormatException throwable) {
-                throwable.printStackTrace();
-                servletWriter("Id is not an integer", resp);
-                resp.setStatus(SC_NOT_FOUND);
+                getNumberFormatException(resp, throwable);
             }
         } else {
             resp.setStatus(SC_NOT_FOUND);
@@ -58,10 +52,8 @@ public class ExceptionDispatcher {
                 TypesOfExpenses.valueOf(type);
                 servletWriter(transactionService.getType(type), resp);
             } catch (SQLException throwable) {
-                throwable.printStackTrace();
-                servletWriter("No connection to database", resp);
-                resp.setStatus(SC_NOT_FOUND);
-            }  catch (IllegalArgumentException throwable) {
+                getSQLException(resp, throwable);
+            } catch (IllegalArgumentException throwable) {
                 throwable.printStackTrace();
                 servletWriter("Non-existing type param", resp);
                 resp.setStatus(SC_NOT_FOUND);
@@ -77,9 +69,7 @@ public class ExceptionDispatcher {
         try {
             servletWriter(transactionService.getAll(), resp);
         } catch (SQLException throwable) {
-            throwable.printStackTrace();
-            servletWriter("No connection to database", resp);
-            resp.setStatus(SC_NOT_FOUND);
+            getSQLException(resp, throwable);
         }
     }
 
@@ -87,9 +77,7 @@ public class ExceptionDispatcher {
         try {
             servletWriter(transactionService.getSummaryOfValue(), resp);
         } catch (SQLException throwable) {
-            throwable.printStackTrace();
-            servletWriter("No connection to database", resp);
-            resp.setStatus(SC_NOT_FOUND);
+            getSQLException(resp, throwable);
         }
     }
 
@@ -99,13 +87,11 @@ public class ExceptionDispatcher {
             if (!respString.equals("")) {
                 servletWriter("New transaction added", resp);
             } else {
-               servletWriter("Didn't get valid Transaction", resp);
+                servletWriter("Didn't get valid Transaction", resp);
                 resp.setStatus(SC_NOT_FOUND);
             }
         } catch (SQLException throwable) {
-            throwable.printStackTrace();
-            servletWriter("No connection to database", resp);
-            resp.setStatus(SC_NOT_FOUND);
+            getSQLException(resp, throwable);
         }
     }
 
@@ -113,15 +99,13 @@ public class ExceptionDispatcher {
         try {
             respString = transactionService.put(jsonString);
             if (!respString.equals("")) {
-                servletWriter(respString,resp);
+                servletWriter(respString, resp);
             } else {
-                servletWriter("Didn't get valid Transaction",resp);
+                servletWriter("Didn't get valid Transaction", resp);
                 resp.setStatus(SC_NOT_FOUND);
             }
         } catch (SQLException throwable) {
-            throwable.printStackTrace();
-            servletWriter("No connection to database", resp);
-            resp.setStatus(SC_NOT_FOUND);
+            getSQLException(resp, throwable);
         }
     }
 
@@ -130,9 +114,7 @@ public class ExceptionDispatcher {
         try {
             transactionService.putType(jsonString, type);
         } catch (SQLException throwable) {
-            throwable.printStackTrace();
-            servletWriter("No connection to database", resp);
-            resp.setStatus(SC_NOT_FOUND);
+            getSQLException(resp, throwable);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
             servletWriter("Didn't get valid Transactions", resp);
@@ -146,13 +128,9 @@ public class ExceptionDispatcher {
             try {
                 servletWriter(transactionService.delete(Integer.parseInt(id)), resp);
             } catch (SQLException throwable) {
-                throwable.printStackTrace();
-                servletWriter("No connection to database", resp);
-                resp.setStatus(SC_NOT_FOUND);
+                getSQLException(resp, throwable);
             } catch (NumberFormatException throwable) {
-                throwable.printStackTrace();
-                servletWriter("Id is not an integer", resp);
-                resp.setStatus(SC_NOT_FOUND);
+                getNumberFormatException(resp, throwable);
             }
         } else {
             resp.setStatus(SC_NOT_FOUND);
@@ -165,9 +143,7 @@ public class ExceptionDispatcher {
             try {
                 servletWriter(transactionService.deleteType(type), resp);
             } catch (SQLException throwable) {
-                throwable.printStackTrace();
-                servletWriter("No connection to database", resp);
-                resp.setStatus(SC_NOT_FOUND);
+                getSQLException(resp, throwable);
             }
         } else {
             servletWriter("There is no type parameter", resp);
@@ -180,9 +156,7 @@ public class ExceptionDispatcher {
             try {
                 servletWriter(transactionService.getSortedTransactions(sortType), resp);
             } catch (SQLException throwable) {
-                throwable.printStackTrace();
-                servletWriter("No connection to database", resp);
-                resp.setStatus(SC_NOT_FOUND);
+                getSQLException(resp, throwable);
             } catch (NullPointerException throwable) {
                 throwable.printStackTrace();
                 servletWriter("There is no such sortType", resp);
@@ -202,5 +176,17 @@ public class ExceptionDispatcher {
             System.out.println("Output problems");
             e.printStackTrace();
         }
+    }
+
+    private void getSQLException(HttpServletResponse resp, SQLException throwable) {
+        throwable.printStackTrace();
+        servletWriter("No connection to database", resp);
+        resp.setStatus(SC_INTERNAL_SERVER_ERROR);
+    }
+
+    private void getNumberFormatException(HttpServletResponse resp, NumberFormatException throwable) {
+        throwable.printStackTrace();
+        servletWriter("Id is not an integer", resp);
+        resp.setStatus(SC_NOT_FOUND);
     }
 }
