@@ -97,9 +97,10 @@ public class ExceptionDispatcher {
         try {
             respString = transactionService.post(jsonString);
             if (!respString.equals("")) {
-                respString = "New transaction added";
+                servletWriter("New transaction added", resp);
             } else {
-                respString = "Didn't get valid Transaction";
+               servletWriter("Didn't get valid Transaction", resp);
+                resp.setStatus(SC_NOT_FOUND);
             }
         } catch (SQLException throwable) {
             throwable.printStackTrace();
@@ -115,6 +116,7 @@ public class ExceptionDispatcher {
                 servletWriter(respString,resp);
             } else {
                 servletWriter("Didn't get valid Transaction",resp);
+                resp.setStatus(SC_NOT_FOUND);
             }
         } catch (SQLException throwable) {
             throwable.printStackTrace();
