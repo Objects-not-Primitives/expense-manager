@@ -8,16 +8,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 
-import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
-import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
+import static javax.servlet.http.HttpServletResponse.*;
 
-public class ExceptionDispatcher {
+public class ResponseConstructor {
 
     private TransactionService transactionService;
 
-    private static String respString;
-
-    public ExceptionDispatcher(HttpServletResponse resp) {
+    public ResponseConstructor(HttpServletResponse resp) {
         try {
             this.transactionService = new TransactionService();
         } catch (SQLException throwable) {
@@ -28,11 +25,11 @@ public class ExceptionDispatcher {
     public void getOne(String id, HttpServletResponse resp) {
         if (id != null) {
             try {
-                respString = transactionService.getOne(id);
+                String respString = transactionService.getOne(id);
                 if (!respString.equals("")) {
                     servletWriter(respString, resp);
                 } else {
-                    resp.setStatus(SC_INTERNAL_SERVER_ERROR);
+                    resp.setStatus(	SC_NOT_FOUND);
                     servletWriter("There is no transaction with such id", resp);
                 }
             } catch (SQLException throwable) {
@@ -41,7 +38,7 @@ public class ExceptionDispatcher {
                 getNumberFormatException(resp, throwable);
             }
         } else {
-            resp.setStatus(SC_NOT_FOUND);
+            resp.setStatus(SC_BAD_REQUEST);
             servletWriter("There is no id parameter", resp);
         }
     }
@@ -55,11 +52,11 @@ public class ExceptionDispatcher {
                 getSQLException(resp, throwable);
             } catch (IllegalArgumentException throwable) {
                 throwable.printStackTrace();
-                servletWriter("Non-existing type param", resp);
+                servletWriter("There is no transaction with such type", resp);
                 resp.setStatus(SC_NOT_FOUND);
             }
         } else {
-            resp.setStatus(SC_NOT_FOUND);
+            resp.setStatus(SC_BAD_REQUEST);
             servletWriter("There is no getType parameter", resp);
         }
 
@@ -83,13 +80,8 @@ public class ExceptionDispatcher {
 
     public void post(String jsonString, HttpServletResponse resp) {
         try {
-            respString = transactionService.post(jsonString);
-            if (!respString.equals("")) {
-                servletWriter("New transaction added", resp);
-            } else {
-                servletWriter("Didn't get valid Transaction", resp);
-                resp.setStatus(SC_NOT_FOUND);
-            }
+            String respString = transactionService.post(jsonString);
+            respStringCheck(respString, resp);
         } catch (SQLException throwable) {
             getSQLException(resp, throwable);
         }
@@ -97,13 +89,8 @@ public class ExceptionDispatcher {
 
     public void put(String jsonString, HttpServletResponse resp) {
         try {
-            respString = transactionService.put(jsonString);
-            if (!respString.equals("")) {
-                servletWriter(respString, resp);
-            } else {
-                servletWriter("Didn't get valid Transaction", resp);
-                resp.setStatus(SC_NOT_FOUND);
-            }
+            String respString = transactionService.put(jsonString);
+            respStringCheck(respString, resp);
         } catch (SQLException throwable) {
             getSQLException(resp, throwable);
         }
@@ -118,7 +105,7 @@ public class ExceptionDispatcher {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
             servletWriter("Didn't get valid Transactions", resp);
-            resp.setStatus(SC_NOT_FOUND);
+            resp.setStatus(SC_BAD_REQUEST);
         }
     }
 
@@ -133,7 +120,7 @@ public class ExceptionDispatcher {
                 getNumberFormatException(resp, throwable);
             }
         } else {
-            resp.setStatus(SC_NOT_FOUND);
+            resp.setStatus(SC_BAD_REQUEST);
             servletWriter("There is no id parameter", resp);
         }
     }
@@ -147,7 +134,7 @@ public class ExceptionDispatcher {
             }
         } else {
             servletWriter("There is no type parameter", resp);
-            resp.setStatus(SC_NOT_FOUND);
+            resp.setStatus(SC_BAD_REQUEST);
         }
     }
 
@@ -163,7 +150,7 @@ public class ExceptionDispatcher {
                 resp.setStatus(SC_NOT_FOUND);
             }
         } else {
-            resp.setStatus(SC_NOT_FOUND);
+            resp.setStatus(SC_BAD_REQUEST);
             servletWriter("There is no sortType parameter", resp);
         }
     }
@@ -187,6 +174,15 @@ public class ExceptionDispatcher {
     private void getNumberFormatException(HttpServletResponse resp, NumberFormatException throwable) {
         throwable.printStackTrace();
         servletWriter("Id is not an integer", resp);
-        resp.setStatus(SC_NOT_FOUND);
+        resp.setStatus(SC_BAD_REQUEST);
+    }
+
+    private void respStringCheck(String respString, HttpServletResponse resp) {
+        if (!respString.equals("")) {
+            servletWriter(respString, resp);
+        } else {
+            servletWriter("Didn't get valid Transaction", resp);
+            resp.setStatus(SC_BAD_REQUEST);
+        }
     }
 }
