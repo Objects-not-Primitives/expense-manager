@@ -1,11 +1,16 @@
 package org.objectsNotPrimitives.expenseManager.servlet;
 
+import org.objectsNotPrimitives.expenseManager.model.Transaction;
+import org.objectsNotPrimitives.expenseManager.service.TransactionService;
+
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
@@ -16,26 +21,54 @@ public class TransactionServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
-        ResponseConstructor responseConstructor = new ResponseConstructor(resp);
+        ResponseConstructor responseConstructor = new ResponseConstructor();
+        TransactionService transactionService = new TransactionService();
         switch (req.getPathInfo()) {
             case ("/"): {
-                responseConstructor.getOne(req.getParameter("id"), resp);
+                try {
+                    Transaction transaction = transactionService.getOne(req.getParameter("id"));
+                    responseConstructor.getOne(transaction);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
                 break;
             }
             case ("/sort/"): {
-                responseConstructor.getSortedTransactions(req.getParameter("sortType"), resp);
+                try {
+                    Stream<Transaction> transactionStream = transactionService.getSortedTransactions(req.getParameter("sortType"));
+                    responseConstructor.getSortedTransactions(transactionStream);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
                 break;
             }
             case ("/getType/"): {
-                responseConstructor.getType(req.getParameter("getType"), resp);
+                try {
+                    Stream<Transaction> transactionStream = transactionService.getType(req.getParameter("getType"));
+                    responseConstructor.getType(transactionStream);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
                 break;
             }
             case ("/getSum/"): {
-                responseConstructor.getSummaryOfValue(resp);
+                try {
+                    long sum = transactionService.getSummaryOfValue();
+                    responseConstructor.getSummaryOfValue(sum);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
                 break;
             }
             case ("/getAll/"): {
-                responseConstructor.getAll(resp);
+                try {
+                    Stream<Transaction> transactionStream = transactionService.getAll();
+                    responseConstructor.getAll(transactionStream);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
                 break;
             }
             default: {
@@ -48,35 +81,52 @@ public class TransactionServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
-        ResponseConstructor exceptionDispatcher = new ResponseConstructor(resp);
+        ResponseConstructor responseConstructor = new ResponseConstructor();
+        TransactionService transactionService = new TransactionService();
         try {
             String jsonString = req.getReader().lines()
                     .collect(Collectors.joining(System.lineSeparator()));
-            exceptionDispatcher.post(jsonString, resp);
-        } catch (IOException e) {
-            catchBadRequest(resp, exceptionDispatcher);
+            transactionService.post(jsonString);
+            responseConstructor.post();
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
         }
     }
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) {
-        ResponseConstructor responseConstructor = new ResponseConstructor(resp);
+        ResponseConstructor responseConstructor = new ResponseConstructor();
+        TransactionService transactionService = new TransactionService();
         try {
             String jsonString = req.getReader().lines()
                     .collect(Collectors.joining(System.lineSeparator()));
-            responseConstructor.put(jsonString, resp);
-        } catch (IOException e) {
+            transactionService.put(jsonString);
+            responseConstructor.put();
+        } catch (IOException | SQLException e) {
             catchBadRequest(resp, responseConstructor);
         }
     }
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
-        ResponseConstructor responseConstructor = new ResponseConstructor(resp);
+        ResponseConstructor responseConstructor = new ResponseConstructor();
+        TransactionService transactionService = new TransactionService();
         if (req.getParameterMap().containsKey("id")) {
-            responseConstructor.delete(req.getParameter("id"), resp);
+            try {
+                transactionService.delete(Integer.parseInt(req.getParameter("id")));
+                responseConstructor.delete();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
         } else if (req.getParameterMap().containsKey("type")) {
-            responseConstructor.deleteType(req.getParameter("type"), resp);
+            try {
+                transactionService.deleteType(req.getParameter("type"));
+                responseConstructor.deleteType();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
         } else {
             catchBadRequest(resp, responseConstructor);
         }

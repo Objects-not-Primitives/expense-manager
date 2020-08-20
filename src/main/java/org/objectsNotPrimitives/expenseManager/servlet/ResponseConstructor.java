@@ -1,103 +1,56 @@
 package org.objectsNotPrimitives.expenseManager.servlet;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.objectsNotPrimitives.expenseManager.model.TypesOfExpenses;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.objectsNotPrimitives.expenseManager.model.Transaction;
 import org.objectsNotPrimitives.expenseManager.service.TransactionService;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static javax.servlet.http.HttpServletResponse.*;
 
 public class ResponseConstructor {
 
-    private TransactionService transactionService;
+    private final TransactionService transactionService;
+    private static final ObjectMapper mapper = new ObjectMapper();
 
-    public ResponseConstructor(HttpServletResponse resp) {
-        try {
-            this.transactionService = new TransactionService();
-        } catch (SQLException throwable) {
-            getSQLException(resp, throwable);
-        }
+    public ResponseConstructor() {
+        this.transactionService = new TransactionService();
     }
 
-    public void getOne(String id, HttpServletResponse resp) {
-        if (id != null) {
-            try {
-                String respString = transactionService.getOne(id);
-                if (!respString.equals("")) {
-                    servletWriter(respString, resp);
-                } else {
-                    resp.setStatus(	SC_NOT_FOUND);
-                    servletWriter("There is no transaction with such id", resp);
-                }
-            } catch (SQLException throwable) {
-                getSQLException(resp, throwable);
-            } catch (NumberFormatException throwable) {
-                getNumberFormatException(resp, throwable);
-            }
-        } else {
-            resp.setStatus(SC_BAD_REQUEST);
-            servletWriter("There is no id parameter", resp);
-        }
+    public String getOne(Transaction transaction) {
+        return transactionToJson(transaction);
     }
 
-    public void getType(String type, HttpServletResponse resp) {
-        if (type != null) {
-            try {
-                TypesOfExpenses.valueOf(type);
-                servletWriter(transactionService.getType(type), resp);
-            } catch (SQLException throwable) {
-                getSQLException(resp, throwable);
-            } catch (IllegalArgumentException throwable) {
-                throwable.printStackTrace();
-                servletWriter("There is no transaction with such type", resp);
-                resp.setStatus(SC_NOT_FOUND);
-            }
-        } else {
-            resp.setStatus(SC_BAD_REQUEST);
-            servletWriter("There is no getType parameter", resp);
-        }
-
+    public String getType(Stream<Transaction> transactionStream) {
+        return transactionStream.map(this::transactionToJson)
+                .collect(Collectors.joining(System.lineSeparator()));
     }
 
-    public void getAll(HttpServletResponse resp) {
-        try {
-            servletWriter(transactionService.getAll(), resp);
-        } catch (SQLException throwable) {
-            getSQLException(resp, throwable);
-        }
+    public String getAll(Stream<Transaction> transactionStream) {
+        return transactionStream
+                .map(this::transactionToJson)
+                .collect(Collectors.joining(System.lineSeparator()));
     }
 
-    public void getSummaryOfValue(HttpServletResponse resp) {
-        try {
-            servletWriter(transactionService.getSummaryOfValue(), resp);
-        } catch (SQLException throwable) {
-            getSQLException(resp, throwable);
-        }
+    public String getSummaryOfValue(long sum) {
+        return "Summary of Transaction values: " + sum;
     }
 
-    public void post(String jsonString, HttpServletResponse resp) {
-        try {
-            String respString = transactionService.post(jsonString);
-            respStringCheck(respString, resp);
-        } catch (SQLException throwable) {
-            getSQLException(resp, throwable);
-        }
+    public String post() {
+        return "New transaction added";
     }
 
-    public void put(String jsonString, HttpServletResponse resp) {
-        try {
-            String respString = transactionService.put(jsonString);
-            respStringCheck(respString, resp);
-        } catch (SQLException throwable) {
-            getSQLException(resp, throwable);
-        }
+    public String put() {
+        return "Transaction updated";
     }
 
     //Метод не тестировался
-    public void putType(String jsonString, String type, HttpServletResponse resp) {
+    /*public void putType(String jsonString, String type, HttpServletResponse resp) {
         try {
             transactionService.putType(jsonString, type);
         } catch (SQLException throwable) {
@@ -107,52 +60,20 @@ public class ResponseConstructor {
             servletWriter("Didn't get valid Transactions", resp);
             resp.setStatus(SC_BAD_REQUEST);
         }
+    }*/
+
+
+    public String delete() {
+        return "Transaction deleted";
     }
 
-
-    public void delete(String id, HttpServletResponse resp) {
-        if (id != null) {
-            try {
-                servletWriter(transactionService.delete(Integer.parseInt(id)), resp);
-            } catch (SQLException throwable) {
-                getSQLException(resp, throwable);
-            } catch (NumberFormatException throwable) {
-                getNumberFormatException(resp, throwable);
-            }
-        } else {
-            resp.setStatus(SC_BAD_REQUEST);
-            servletWriter("There is no id parameter", resp);
-        }
+    public String deleteType() {
+        return "Transactions deleted";
     }
 
-    public void deleteType(String type, HttpServletResponse resp) {
-        if (type != null) {
-            try {
-                servletWriter(transactionService.deleteType(type), resp);
-            } catch (SQLException throwable) {
-                getSQLException(resp, throwable);
-            }
-        } else {
-            servletWriter("There is no type parameter", resp);
-            resp.setStatus(SC_BAD_REQUEST);
-        }
-    }
-
-    public void getSortedTransactions(String sortType, HttpServletResponse resp) {
-        if (sortType != null) {
-            try {
-                servletWriter(transactionService.getSortedTransactions(sortType), resp);
-            } catch (SQLException throwable) {
-                getSQLException(resp, throwable);
-            } catch (NullPointerException throwable) {
-                throwable.printStackTrace();
-                servletWriter("There is no such sortType", resp);
-                resp.setStatus(SC_NOT_FOUND);
-            }
-        } else {
-            resp.setStatus(SC_BAD_REQUEST);
-            servletWriter("There is no sortType parameter", resp);
-        }
+    public String getSortedTransactions(Stream<Transaction> transactionStream) {
+        return transactionStream.map(this::transactionToJson)
+                .collect(Collectors.joining(System.lineSeparator()));
     }
 
     public void servletWriter(String text, HttpServletResponse resp) {
@@ -183,6 +104,15 @@ public class ResponseConstructor {
         } else {
             servletWriter("Didn't get valid Transaction", resp);
             resp.setStatus(SC_BAD_REQUEST);
+        }
+    }
+
+    private String transactionToJson(Transaction transaction) {
+        try {
+            return mapper.writeValueAsString(transaction);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return "";
         }
     }
 }
