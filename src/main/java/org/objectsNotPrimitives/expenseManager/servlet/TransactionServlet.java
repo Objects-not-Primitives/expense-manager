@@ -12,13 +12,11 @@ import java.sql.SQLException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
-import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
+import static javax.servlet.http.HttpServletResponse.*;
 
 @WebServlet(urlPatterns = {"/transaction/*"})
 public class TransactionServlet extends HttpServlet {
-
-
+    
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         ResponseConstructor responseConstructor = new ResponseConstructor();
@@ -26,31 +24,56 @@ public class TransactionServlet extends HttpServlet {
         switch (req.getPathInfo()) {
             case ("/"): {
                 try {
-                    Transaction transaction = transactionService.getOne(req.getParameter("id"));
-                    responseConstructor.getOne(transaction);
+                    String id = req.getParameter("id");
+                    if (id != null) {
+                        Transaction transaction = transactionService.getOne(id);
+                        responseConstructor.getOne(transaction);
+                    } else {
+                        resp.setStatus(SC_BAD_REQUEST);
+                    }
                 } catch (SQLException e) {
                     e.printStackTrace();
+                    resp.setStatus(SC_INTERNAL_SERVER_ERROR);
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                    resp.setStatus(SC_BAD_REQUEST);
                 }
                 break;
             }
             case ("/sort/"): {
-                try {
-                    Stream<Transaction> transactionStream = transactionService.getSortedTransactions(req.getParameter("sortType"));
-                    responseConstructor.getSortedTransactions(transactionStream);
-                } catch (SQLException e) {
-                    e.printStackTrace();
+                if (req.getParameter("sortType") != null) {
+                    try {
+                        Stream<Transaction> transactionStream = transactionService.getSortedTransactions(req.getParameter("sortType"));
+                        responseConstructor.getSortedTransactions(transactionStream);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                        resp.setStatus(SC_INTERNAL_SERVER_ERROR);
+                    } catch (NullPointerException throwable) {
+                        throwable.printStackTrace();
+                        resp.setStatus(SC_NOT_FOUND);
+                    }
+                } else {
+                    resp.setStatus(SC_BAD_REQUEST);
                 }
 
                 break;
             }
             case ("/getType/"): {
-                try {
-                    Stream<Transaction> transactionStream = transactionService.getType(req.getParameter("getType"));
-                    responseConstructor.getType(transactionStream);
-                } catch (SQLException e) {
-                    e.printStackTrace();
+                if (req.getParameter("getType") != null) {
+                    try {
+                        Stream<Transaction> transactionStream = transactionService.getType(req.getParameter("getType"));
+                        responseConstructor.getType(transactionStream);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                        resp.setStatus(SC_INTERNAL_SERVER_ERROR);
+                    } catch (IllegalArgumentException throwable) {
+                        throwable.printStackTrace();
+                        resp.setStatus(SC_NOT_FOUND);
+                    }
+                    break;
+                } else {
+                    resp.setStatus(SC_BAD_REQUEST);
                 }
-                break;
             }
             case ("/getSum/"): {
                 try {
@@ -58,6 +81,7 @@ public class TransactionServlet extends HttpServlet {
                     responseConstructor.getSummaryOfValue(sum);
                 } catch (SQLException e) {
                     e.printStackTrace();
+                    resp.setStatus(SC_INTERNAL_SERVER_ERROR);
                 }
 
                 break;
@@ -68,6 +92,7 @@ public class TransactionServlet extends HttpServlet {
                     responseConstructor.getAll(transactionStream);
                 } catch (SQLException e) {
                     e.printStackTrace();
+                    resp.setStatus(SC_INTERNAL_SERVER_ERROR);
                 }
                 break;
             }
@@ -90,6 +115,7 @@ public class TransactionServlet extends HttpServlet {
             responseConstructor.post();
         } catch (SQLException | IOException e) {
             e.printStackTrace();
+            resp.setStatus(SC_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -112,21 +138,31 @@ public class TransactionServlet extends HttpServlet {
         ResponseConstructor responseConstructor = new ResponseConstructor();
         TransactionService transactionService = new TransactionService();
         if (req.getParameterMap().containsKey("id")) {
-            try {
-                transactionService.delete(Integer.parseInt(req.getParameter("id")));
-                responseConstructor.delete();
-            } catch (SQLException e) {
-                e.printStackTrace();
+            if (req.getParameter("id") != null) {
+                try {
+                    transactionService.delete(Integer.parseInt(req.getParameter("id")));
+                    responseConstructor.delete();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    resp.setStatus(SC_INTERNAL_SERVER_ERROR);
+                } catch (NumberFormatException throwable) {
+                    throwable.printStackTrace();
+                    resp.setStatus(SC_BAD_REQUEST);
+                }
+            } else {
+                resp.setStatus(SC_BAD_REQUEST);
             }
-
         } else if (req.getParameterMap().containsKey("type")) {
-            try {
-                transactionService.deleteType(req.getParameter("type"));
-                responseConstructor.deleteType();
-            } catch (SQLException e) {
-                e.printStackTrace();
+            if (req.getParameter("type") != null) {
+                try {
+                    transactionService.deleteType(req.getParameter("type"));
+                    responseConstructor.deleteType();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                resp.setStatus(SC_BAD_REQUEST);
             }
-
         } else {
             catchBadRequest(resp, responseConstructor);
         }

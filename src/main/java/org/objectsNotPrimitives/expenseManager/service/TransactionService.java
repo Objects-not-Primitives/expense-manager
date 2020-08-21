@@ -7,15 +7,12 @@ import org.objectsNotPrimitives.expenseManager.model.Transaction;
 import org.objectsNotPrimitives.expenseManager.dao.TransactionDAO;
 
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class TransactionService {
     private static final ObjectMapper mapper = new ObjectMapper();
     private static final String propertiesPath = "application.properties";
-    private static String respString;
 
     private TransactionDAO transactionDAO;
 
@@ -29,11 +26,7 @@ public class TransactionService {
 
     public Transaction getOne(String id) throws SQLException, NumberFormatException {
         Optional<Transaction> optionalTransaction = transactionDAO.selectOne(Integer.parseInt(id));
-        if (optionalTransaction.isPresent()) {
-            return optionalTransaction.get();
-        } else {
-            return null;
-        }
+        return optionalTransaction.orElse(null);
     }
 
     public Stream<Transaction> getType(String type) throws SQLException {

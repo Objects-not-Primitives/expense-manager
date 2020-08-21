@@ -3,11 +3,9 @@ package org.objectsNotPrimitives.expenseManager.servlet;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.objectsNotPrimitives.expenseManager.model.Transaction;
-import org.objectsNotPrimitives.expenseManager.service.TransactionService;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -15,11 +13,9 @@ import static javax.servlet.http.HttpServletResponse.*;
 
 public class ResponseConstructor {
 
-    private final TransactionService transactionService;
     private static final ObjectMapper mapper = new ObjectMapper();
 
     public ResponseConstructor() {
-        this.transactionService = new TransactionService();
     }
 
     public String getOne(Transaction transaction) {
@@ -62,7 +58,6 @@ public class ResponseConstructor {
         }
     }*/
 
-
     public String delete() {
         return "Transaction deleted";
     }
@@ -83,27 +78,6 @@ public class ResponseConstructor {
             resp.setStatus(SC_INTERNAL_SERVER_ERROR);
             System.out.println("Output problems");
             e.printStackTrace();
-        }
-    }
-
-    private void getSQLException(HttpServletResponse resp, SQLException throwable) {
-        throwable.printStackTrace();
-        servletWriter("No connection to database", resp);
-        resp.setStatus(SC_INTERNAL_SERVER_ERROR);
-    }
-
-    private void getNumberFormatException(HttpServletResponse resp, NumberFormatException throwable) {
-        throwable.printStackTrace();
-        servletWriter("Id is not an integer", resp);
-        resp.setStatus(SC_BAD_REQUEST);
-    }
-
-    private void respStringCheck(String respString, HttpServletResponse resp) {
-        if (!respString.equals("")) {
-            servletWriter(respString, resp);
-        } else {
-            servletWriter("Didn't get valid Transaction", resp);
-            resp.setStatus(SC_BAD_REQUEST);
         }
     }
 
