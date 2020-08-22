@@ -60,7 +60,7 @@ public class TransactionServlet extends HttpServlet {
                 if (req.getParameter("getType") != null) {
                     try {
                         Stream<Transaction> transactionStream = transactionService.getType(req.getParameter("getType"));
-                        servletWriter(responseConstructor.getType(transactionStream), resp);
+                        servletWriter(responseConstructor.getResult(transactionStream), resp);
                     } catch (SQLException e) {
                         catchInternalServerError(resp, e);
                     } catch (IllegalArgumentException throwable) {
@@ -84,7 +84,7 @@ public class TransactionServlet extends HttpServlet {
             case ("/getAll/"): {
                 try {
                     Stream<Transaction> transactionStream = transactionService.getAll();
-                    servletWriter(responseConstructor.getAll(transactionStream), resp);
+                    servletWriter(responseConstructor.getResult(transactionStream), resp);
                 } catch (SQLException e) {
                     catchInternalServerError(resp, e);
                 }

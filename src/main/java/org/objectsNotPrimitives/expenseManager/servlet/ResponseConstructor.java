@@ -22,12 +22,7 @@ public class ResponseConstructor {
         return transactionToJson(transaction);
     }
 
-    public String getType(Stream<Transaction> transactionStream) {
-        return transactionStream.map(this::transactionToJson)
-                .collect(Collectors.joining(System.lineSeparator()));
-    }
-
-    public String getAll(Stream<Transaction> transactionStream) {
+    public String getResult(Stream<Transaction> transactionStream) {
         return transactionStream
                 .map(this::transactionToJson)
                 .collect(Collectors.joining(System.lineSeparator()));
