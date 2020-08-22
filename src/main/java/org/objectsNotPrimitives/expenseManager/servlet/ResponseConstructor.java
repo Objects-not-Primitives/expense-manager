@@ -37,13 +37,9 @@ public class ResponseConstructor {
         return "Summary of Transaction values: " + sum;
     }
 
-    public String post() {
-        return "New transaction added";
-    }
 
-    public String put() {
-        return "Transaction updated";
-    }
+
+
 
     //Метод не тестировался
     /*public void putType(String jsonString, String type, HttpServletResponse resp) {
@@ -58,27 +54,13 @@ public class ResponseConstructor {
         }
     }*/
 
-    public String delete() {
-        return "Transaction deleted";
-    }
 
-    public String deleteType() {
-        return "Transactions deleted";
-    }
+
+
 
     public String getSortedTransactions(Stream<Transaction> transactionStream) {
         return transactionStream.map(this::transactionToJson)
                 .collect(Collectors.joining(System.lineSeparator()));
-    }
-
-    public void servletWriter(String text, HttpServletResponse resp) {
-        try {
-            resp.getWriter().println(text);
-        } catch (IOException e) {
-            resp.setStatus(SC_INTERNAL_SERVER_ERROR);
-            System.out.println("Output problems");
-            e.printStackTrace();
-        }
     }
 
     private String transactionToJson(Transaction transaction) {
