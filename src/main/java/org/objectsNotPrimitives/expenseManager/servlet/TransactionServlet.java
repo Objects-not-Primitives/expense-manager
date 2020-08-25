@@ -20,7 +20,7 @@ public class TransactionServlet extends HttpServlet {
     final TransactionService transactionService = new TransactionService();
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp){
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         ResponseConstructor responseConstructor = new ResponseConstructor();
         switch (req.getPathInfo()) {
             case ("/"): {
@@ -32,8 +32,6 @@ public class TransactionServlet extends HttpServlet {
                     } else {
                         catchBadRequest(resp);
                     }
-                } catch (SQLException e) {
-                    catchInternalServerError(resp, e);
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                     catchBadRequest(resp);
@@ -45,8 +43,6 @@ public class TransactionServlet extends HttpServlet {
                     try {
                         Stream<Transaction> transactionStream = transactionService.getSortedTransactions(req.getParameter("sortType"));
                         servletWriter(responseConstructor.getSortedTransactions(transactionStream), resp);
-                    } catch (SQLException e) {
-                        catchInternalServerError(resp, e);
                     } catch (NullPointerException throwable) {
                         throwable.printStackTrace();
                         resp.setStatus(SC_NOT_FOUND);
@@ -61,8 +57,6 @@ public class TransactionServlet extends HttpServlet {
                     try {
                         Stream<Transaction> transactionStream = transactionService.getType(req.getParameter("getType"));
                         servletWriter(responseConstructor.getResult(transactionStream), resp);
-                    } catch (SQLException e) {
-                        catchInternalServerError(resp, e);
                     } catch (IllegalArgumentException throwable) {
                         throwable.printStackTrace();
                         resp.setStatus(SC_NOT_FOUND);
@@ -73,21 +67,13 @@ public class TransactionServlet extends HttpServlet {
                 break;
             }
             case ("/getSum/"): {
-                try {
-                    long sum = transactionService.getSummaryOfValue();
-                    servletWriter(responseConstructor.getSummaryOfValue(sum), resp);
-                } catch (SQLException e) {
-                    catchInternalServerError(resp, e);
-                }
+                long sum = transactionService.getSummaryOfValue();
+                servletWriter(responseConstructor.getSummaryOfValue(sum), resp);
                 break;
             }
             case ("/getAll/"): {
-                try {
-                    Stream<Transaction> transactionStream = transactionService.getAll();
-                    servletWriter(responseConstructor.getResult(transactionStream), resp);
-                } catch (SQLException e) {
-                    catchInternalServerError(resp, e);
-                }
+                Stream<Transaction> transactionStream = transactionService.getAll();
+                servletWriter(responseConstructor.getResult(transactionStream), resp);
                 break;
             }
             default: {
@@ -105,8 +91,6 @@ public class TransactionServlet extends HttpServlet {
                     .collect(Collectors.joining(System.lineSeparator()));
             transactionService.post(jsonString);
             servletWriter("New transaction added", resp);
-        } catch (SQLException e) {
-            catchInternalServerError(resp, e);
         } catch (IOException e) {
             catchBadRequest(resp);
         }
@@ -119,8 +103,6 @@ public class TransactionServlet extends HttpServlet {
                     .collect(Collectors.joining(System.lineSeparator()));
             transactionService.put(jsonString);
             servletWriter("Transaction updated", resp);
-        } catch (SQLException e) {
-            catchInternalServerError(resp, e);
         } catch (IOException e) {
             catchBadRequest(resp);
         }
@@ -133,8 +115,6 @@ public class TransactionServlet extends HttpServlet {
                 try {
                     transactionService.delete(Integer.parseInt(req.getParameter("id")));
                     servletWriter("Transaction deleted", resp);
-                } catch (SQLException e) {
-                    catchInternalServerError(resp, e);
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                     catchBadRequest(resp);
@@ -144,12 +124,8 @@ public class TransactionServlet extends HttpServlet {
             }
         } else if (req.getParameterMap().containsKey("type")) {
             if (req.getParameter("type") != null) {
-                try {
-                    transactionService.deleteType(req.getParameter("type"));
-                    servletWriter("Transactions deleted", resp);
-                } catch (SQLException e) {
-                    catchInternalServerError(resp, e);
-                }
+                transactionService.deleteType(req.getParameter("type"));
+                servletWriter("Transactions deleted", resp);
             } else {
                 catchBadRequest(resp);
             }

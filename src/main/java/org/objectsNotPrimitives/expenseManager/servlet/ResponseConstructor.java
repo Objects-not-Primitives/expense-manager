@@ -4,12 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.objectsNotPrimitives.expenseManager.model.Transaction;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static javax.servlet.http.HttpServletResponse.*;
 
 public class ResponseConstructor {
 
@@ -32,10 +28,6 @@ public class ResponseConstructor {
         return "Summary of Transaction values: " + sum;
     }
 
-
-
-
-
     //Метод не тестировался
     /*public void putType(String jsonString, String type, HttpServletResponse resp) {
         try {
@@ -48,10 +40,6 @@ public class ResponseConstructor {
             resp.setStatus(SC_BAD_REQUEST);
         }
     }*/
-
-
-
-
 
     public String getSortedTransactions(Stream<Transaction> transactionStream) {
         return transactionStream.map(this::transactionToJson)

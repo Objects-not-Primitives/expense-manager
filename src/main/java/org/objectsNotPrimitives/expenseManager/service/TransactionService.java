@@ -2,11 +2,10 @@ package org.objectsNotPrimitives.expenseManager.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.objectsNotPrimitives.expenseManager.dao.TransactionSpringDAO;
 import org.objectsNotPrimitives.expenseManager.utils.PropertyLoader;
 import org.objectsNotPrimitives.expenseManager.model.Transaction;
-import org.objectsNotPrimitives.expenseManager.dao.TransactionDAO;
 
-import java.sql.SQLException;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -14,47 +13,38 @@ public class TransactionService {
     private static final ObjectMapper mapper = new ObjectMapper();
     private static final String propertiesPath = "application.properties";
 
-    private TransactionDAO transactionDAO;
+    private final TransactionSpringDAO transactionDAO;
 
     public TransactionService() {
-        try {
-            this.transactionDAO = TransactionDAO.getInstance(PropertyLoader.load(propertiesPath));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        this.transactionDAO = TransactionSpringDAO.getInstance(PropertyLoader.load(propertiesPath));
     }
 
-    public Transaction getOne(String id) throws SQLException, NumberFormatException {
+    public Transaction getOne(String id) throws NumberFormatException {
         Optional<Transaction> optionalTransaction = transactionDAO.selectOne(Integer.parseInt(id));
         return optionalTransaction.orElse(null);
     }
 
-    public Stream<Transaction> getType(String type) throws SQLException {
+    public Stream<Transaction> getType(String type) {
         return transactionDAO.selectOneType(type);
     }
 
-    public Stream<Transaction> getAll() throws SQLException {
+    public Stream<Transaction> getAll() {
         return transactionDAO.selectAll();
     }
 
-    public long getSummaryOfValue() throws SQLException {
+    public long getSummaryOfValue() {
         return transactionDAO.selectAll()
                 .mapToLong(Transaction::getValue).sum();
     }
 
-    public void post(String jsonString) throws SQLException {
+    public void post(String jsonString) {
         Optional<Transaction> optionalTransaction = jsonToTransaction(jsonString);
-        if (optionalTransaction.isPresent()) {
-            transactionDAO.insertRecord(optionalTransaction.get());
-        }
+        optionalTransaction.ifPresent(transactionDAO::insertRecord);
     }
 
-    public void put(String jsonString) throws SQLException {
+    public void put(String jsonString) {
         Optional<Transaction> optionalTransaction = jsonToTransaction(jsonString);
-        if (optionalTransaction.isPresent()) {
-            transactionDAO.updateRecord(optionalTransaction.get());
-
-        }
+        optionalTransaction.ifPresent(transactionDAO::updateRecord);
     }
 
     //Метод не тестировался
@@ -65,15 +55,15 @@ public class TransactionService {
         return respString;
     }*/
 
-    public void delete(int id) throws SQLException {
+    public void delete(int id) {
         transactionDAO.deleteRecord(id);
     }
 
-    public void deleteType(String type) throws SQLException {
+    public void deleteType(String type) {
         transactionDAO.deleteTypeRecord(type);
     }
 
-    public Stream<Transaction> getSortedTransactions(String sortType) throws SQLException {
+    public Stream<Transaction> getSortedTransactions(String sortType) {
         SorterService sorterService = new SorterService();
         return transactionDAO.selectAll()
                 .sorted(sorterService.getComparator(sortType));
