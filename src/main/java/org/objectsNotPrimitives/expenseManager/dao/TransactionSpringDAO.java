@@ -2,24 +2,32 @@ package org.objectsNotPrimitives.expenseManager.dao;
 
 import org.objectsNotPrimitives.expenseManager.model.Transaction;
 import org.objectsNotPrimitives.expenseManager.model.TypesOfExpenses;
+import org.objectsNotPrimitives.expenseManager.utils.SpringPropertyLoader;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.stream.Stream;
 
+@Component
 public class TransactionSpringDAO {
 
-    private static TransactionSpringDAO instance;
-    private final JdbcTemplate jdbcTemplate;
 
-    private TransactionSpringDAO(SimpleDriverDataSource dataSource) {
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
+    private final JdbcTemplate jdbcTemplate;
+    @Autowired
+    private TransactionSpringDAO(SpringPropertyLoader properties) {
+        SimpleDriverDataSource dataSource1 = new SimpleDriverDataSource();
+        dataSource1.setPassword(properties.getPassword());
+        dataSource1.setUsername(properties.getUsername());
+        dataSource1.setUrl(properties.getUrl());
+        dataSource1.setDriverClass(org.postgresql.Driver.class);
+        this.jdbcTemplate = new JdbcTemplate(dataSource1);
     }
 
-    public static TransactionSpringDAO getInstance(Properties dbProperties) {
+   /* public static TransactionSpringDAO getInstance(Properties dbProperties) {
         if (instance == null) {
             SimpleDriverDataSource dataSource = connect(dbProperties);
             instance = new TransactionSpringDAO(dataSource);
@@ -28,18 +36,14 @@ public class TransactionSpringDAO {
     }
 
     public static SimpleDriverDataSource connect(Properties dbProperties) {
-        try {
-            Class.forName("org.postgresql.Driver");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
         SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
+        //SimpleDriverDataSource dataSource = new SimpleDriverDataSource(new org.postgresql.Driver(), "spring.datasource.url", "spring.datasource.username", "spring.datasource.password");
         dataSource.setDriverClass(org.postgresql.Driver.class);
-        dataSource.setUsername(dbProperties.getProperty("db.login"));
-        dataSource.setUrl(dbProperties.getProperty("db.url"));
-        dataSource.setPassword(dbProperties.getProperty("db.password"));
+        dataSource.setUsername(dbProperties.getProperty("spring.datasource.username"));
+        dataSource.setUrl(dbProperties.getProperty("spring.datasource.url"));
+        dataSource.setPassword(dbProperties.getProperty("spring.datasource.password"));
         return dataSource;
-    }
+    }*/
 
     public void updateRecord(Transaction transaction) {
 

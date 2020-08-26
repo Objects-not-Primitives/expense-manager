@@ -34,9 +34,9 @@ public class TransactionDAO implements AutoCloseable {
             e.printStackTrace();
         }
         return DriverManager.getConnection(
-                dbProperties.getProperty("db.url"),
-                dbProperties.getProperty("db.login"),
-                dbProperties.getProperty("db.password"));
+                dbProperties.getProperty("spring.datasource.url"),
+                dbProperties.getProperty("spring.datasource.username"),
+                dbProperties.getProperty("spring.datasource.password"));
     }
 
     public void updateRecord(Transaction transaction) throws SQLException {

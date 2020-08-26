@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.objectsNotPrimitives.expenseManager.dao.TransactionSpringDAO;
 import org.objectsNotPrimitives.expenseManager.utils.PropertyLoader;
 import org.objectsNotPrimitives.expenseManager.model.Transaction;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -14,9 +15,11 @@ public class TransactionService {
     private static final String propertiesPath = "application.properties";
 
     private final TransactionSpringDAO transactionDAO;
-
+    private static final ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
+            "applicationContext.xml"
+    );
     public TransactionService() {
-        this.transactionDAO = TransactionSpringDAO.getInstance(PropertyLoader.load(propertiesPath));
+        this.transactionDAO = context.getBean("transactionSpringDAO", TransactionSpringDAO.class);
     }
 
     public Transaction getOne(String id) throws NumberFormatException {

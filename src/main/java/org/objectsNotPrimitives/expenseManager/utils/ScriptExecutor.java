@@ -9,8 +9,8 @@ public class ScriptExecutor {
 
     public void executeSQL(String scriptPath, Properties dbProp) throws IOException {
         Process process = Runtime.getRuntime()
-                .exec("psql -U " + dbProp.getProperty("db.login") + " -d "
-                        + dbProp.getProperty("db.url").split("/")[3] + " -f " + scriptPath);
+                .exec("psql -U " + dbProp.getProperty("spring.datasource.username") + " -d "
+                        + dbProp.getProperty("spring.datasource.url").split("/")[3] + " -f " + scriptPath);
         writeLogs(process);
     }
 

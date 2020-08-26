@@ -6,6 +6,7 @@ import org.objectsNotPrimitives.expenseManager.dao.TransactionDAO;
 import org.objectsNotPrimitives.expenseManager.model.TypesOfExpenses;
 import org.objectsNotPrimitives.expenseManager.utils.PropertyLoader;
 import org.objectsNotPrimitives.expenseManager.utils.ScriptExecutor;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 
 import java.io.IOException;
@@ -19,16 +20,19 @@ public class TestTransactionSpringDAO {
     private static final String deleteDBPath = "src\\main\\resources\\deleteDB.sql";
     private static final String createDBPath = "src\\main\\resources\\createDB.sql";
     private static final String initDBPath = "src\\main\\resources\\initDB.sql";
-
+    private static final ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
+            "applicationContext.xml"
+    );
     public static void main(String[] args) throws SQLException, IOException {
         testConnect();
         testDAO();
     }
 
     private static boolean testDAO() throws SQLException, IOException {
+
         execScripts();
         Properties property = PropertyLoader.load(propertiesPath);
-        TransactionSpringDAO transactionSpringDAO = TransactionSpringDAO.getInstance(property);
+        TransactionSpringDAO transactionSpringDAO = context.getBean("transactionSpringDAO", TransactionSpringDAO.class);
         TransactionDAO transactionDAO = TransactionDAO.getInstance(property);
             List<Transaction> testTransactionList = List.of(
                     new Transaction(11, 2500L, Date.valueOf("2020-12-12"), "xz", TypesOfExpenses.FOOD),
@@ -72,7 +76,7 @@ public class TestTransactionSpringDAO {
 
     private static boolean testConnect() {
         Properties property = PropertyLoader.load(propertiesPath);
-        try {   SimpleDriverDataSource con = TransactionSpringDAO.connect(property);
+        try {   TransactionSpringDAO transactionSpringDAO = context.getBean("transactionSpringDAO", TransactionSpringDAO.class);
             System.out.println("Connected to the database");
             return true;
         } catch (Exception e) {
