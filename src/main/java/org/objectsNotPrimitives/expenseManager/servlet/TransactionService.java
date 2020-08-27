@@ -1,23 +1,23 @@
-package org.objectsNotPrimitives.expenseManager.service;
+package org.objectsNotPrimitives.expenseManager.servlet;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.objectsNotPrimitives.expenseManager.dao.TransactionSpringDAO;
 import org.objectsNotPrimitives.expenseManager.model.Transaction;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.objectsNotPrimitives.expenseManager.service.SorterService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 import java.util.stream.Stream;
-
+@Component
 public class TransactionService {
     private static final ObjectMapper mapper = new ObjectMapper();
 
-    private final TransactionSpringDAO transactionDAO;
-    private static final ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
-            "applicationContext.xml"
-    );
-    public TransactionService() {
-        this.transactionDAO = context.getBean("transactionSpringDAO", TransactionSpringDAO.class);
+
+    private TransactionSpringDAO transactionDAO;
+    @Autowired
+    public TransactionService(TransactionSpringDAO transactionDAO) {
+        this.transactionDAO = transactionDAO;
     }
 
     public Transaction getOne(String id) throws NumberFormatException {

@@ -1,6 +1,6 @@
 package org.objectsNotPrimitives.expenseManager;
 
-import org.objectsNotPrimitives.expenseManager.dao.TransactionSpringDAO;
+import org.objectsNotPrimitives.expenseManager.servlet.TransactionSpringDAO;
 import org.objectsNotPrimitives.expenseManager.model.Transaction;
 import org.objectsNotPrimitives.expenseManager.model.TypesOfExpenses;
 import org.objectsNotPrimitives.expenseManager.utils.PropertyLoader;
