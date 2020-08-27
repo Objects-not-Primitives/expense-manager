@@ -21,24 +21,31 @@ import static javax.servlet.http.HttpServletResponse.*;
 @RestController
 @RequestMapping("/transaction")
 public class TransactionController {
-
+    //TransactionService transactionService = new TransactionService();
 
     @GetMapping("/")
-    public Transaction doGetOne(@RequestParam String id){
+    public Transaction doGetOne(@RequestParam String id) {
         System.out.println(id);
-                //try {
-                    //if (id != null) {
-                       //return transactionService.getOne(id);}}
-        return  new Transaction(11, 2500L, Date.valueOf("2020-12-12"), "xz", TypesOfExpenses.FOOD);}}
-                   /* } else {
-                        catchBadRequest(resp);
-                    }
-                } catch (NumberFormatException e) {
-                    catchBadRequest(resp);
-                }
+        //try {
+            //if (id != null) {
+                //return transactionService.getOne(id);
+                return  new Transaction(11, 2500L, Date.valueOf("2020-12-12"), "xz", TypesOfExpenses.FOOD);}
+    //}
+            /*} else {
+                System.out.println("1");
+                //catchBadRequest(resp);
             }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            //catchBadRequest(resp);
+        }
+        return null;
+    }*/
+}
 
 
+
+/*
             case ("/sort/"): {
                 if (req.getParameter("sortType") != null) {
                     try {

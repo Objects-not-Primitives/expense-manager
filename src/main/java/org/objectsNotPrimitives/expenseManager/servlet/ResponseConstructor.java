@@ -28,19 +28,6 @@ public class ResponseConstructor {
         return "Summary of Transaction values: " + sum;
     }
 
-    //Метод не тестировался
-    /*public void putType(String jsonString, String type, HttpServletResponse resp) {
-        try {
-            transactionService.putType(jsonString, type);
-        } catch (SQLException throwable) {
-            getSQLException(resp, throwable);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            servletWriter("Didn't get valid Transactions", resp);
-            resp.setStatus(SC_BAD_REQUEST);
-        }
-    }*/
-
     public String getSortedTransactions(Stream<Transaction> transactionStream) {
         return transactionStream.map(this::transactionToJson)
                 .collect(Collectors.joining(System.lineSeparator()));

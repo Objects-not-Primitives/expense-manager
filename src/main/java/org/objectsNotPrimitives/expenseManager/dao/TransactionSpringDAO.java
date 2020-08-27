@@ -15,8 +15,8 @@ import java.util.stream.Stream;
 @Component
 public class TransactionSpringDAO {
 
-
     private final JdbcTemplate jdbcTemplate;
+
     @Autowired
     private TransactionSpringDAO(SpringPropertyLoader properties) {
         SimpleDriverDataSource dataSource1 = new SimpleDriverDataSource();
@@ -27,26 +27,7 @@ public class TransactionSpringDAO {
         this.jdbcTemplate = new JdbcTemplate(dataSource1);
     }
 
-   /* public static TransactionSpringDAO getInstance(Properties dbProperties) {
-        if (instance == null) {
-            SimpleDriverDataSource dataSource = connect(dbProperties);
-            instance = new TransactionSpringDAO(dataSource);
-        }
-        return instance;
-    }
-
-    public static SimpleDriverDataSource connect(Properties dbProperties) {
-        SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
-        //SimpleDriverDataSource dataSource = new SimpleDriverDataSource(new org.postgresql.Driver(), "spring.datasource.url", "spring.datasource.username", "spring.datasource.password");
-        dataSource.setDriverClass(org.postgresql.Driver.class);
-        dataSource.setUsername(dbProperties.getProperty("spring.datasource.username"));
-        dataSource.setUrl(dbProperties.getProperty("spring.datasource.url"));
-        dataSource.setPassword(dbProperties.getProperty("spring.datasource.password"));
-        return dataSource;
-    }*/
-
     public void updateRecord(Transaction transaction) {
-
         String sqlCommand = "update transaction set value = ?, date = ?, purpose = ?, types = ? where id = ?";
         jdbcTemplate.update(sqlCommand,
                 transaction.getValue(),
@@ -82,7 +63,6 @@ public class TransactionSpringDAO {
                 rs.getDate("date"), rs.getString("purpose"),
                 TypesOfExpenses.valueOf(rs.getString("types")))));
     }
-
 
     public Stream<Transaction> selectOneType(String type) {
         String sqlCommand = "SELECT * FROM transaction where types = ?";

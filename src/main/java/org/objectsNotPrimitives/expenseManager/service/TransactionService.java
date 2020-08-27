@@ -3,7 +3,6 @@ package org.objectsNotPrimitives.expenseManager.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.objectsNotPrimitives.expenseManager.dao.TransactionSpringDAO;
-import org.objectsNotPrimitives.expenseManager.utils.PropertyLoader;
 import org.objectsNotPrimitives.expenseManager.model.Transaction;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -12,7 +11,6 @@ import java.util.stream.Stream;
 
 public class TransactionService {
     private static final ObjectMapper mapper = new ObjectMapper();
-    private static final String propertiesPath = "application.properties";
 
     private final TransactionSpringDAO transactionDAO;
     private static final ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
@@ -49,14 +47,6 @@ public class TransactionService {
         Optional<Transaction> optionalTransaction = jsonToTransaction(jsonString);
         optionalTransaction.ifPresent(transactionDAO::updateRecord);
     }
-
-    //Метод не тестировался
-    /*public String putType(String jsonString, String type) throws SQLException, JsonProcessingException {
-        Transaction[] transactions = mapper.readValue(jsonString, Transaction[].class);
-        transactionDAO.updateTypeRecord(Arrays.stream(transactions), type);
-        respString = "Transactions updated";
-        return respString;
-    }*/
 
     public void delete(int id) {
         transactionDAO.deleteRecord(id);

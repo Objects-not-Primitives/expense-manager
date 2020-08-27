@@ -14,16 +14,13 @@ public class SpringPropertyLoader {
     @Value("${spring.datasource.password}")
     String password;
 
-
     public String getUrl() {
         return url;
     }
 
-
     public String getUsername() {
         return username;
     }
-
 
     public String getPassword() {
         return password;
