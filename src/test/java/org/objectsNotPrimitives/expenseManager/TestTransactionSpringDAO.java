@@ -19,7 +19,7 @@ public class TestTransactionSpringDAO {
     private static final String createDBPath = "src\\main\\resources\\createDB.sql";
     private static final String initDBPath = "src\\main\\resources\\initDB.sql";
     private static final ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
-            "src\\main\\webapp\\WEB-INF\\applicationContext.xml"
+            "applicationContext.xml"
     );
 
     public static void main(String[] args) throws IOException {
