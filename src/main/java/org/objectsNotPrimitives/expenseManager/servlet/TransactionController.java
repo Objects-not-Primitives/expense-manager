@@ -20,10 +20,10 @@ public class TransactionController {
     }
 
     @GetMapping("/")
-    public Transaction doGetOne(@RequestParam String id) {
+    public String doGetOne(@RequestParam String id) {
         try {
             if (id != null) {
-                return transactionService.getOne(id);
+                return transactionService.getOne(id).toString();
             } else {
                 throw new BadRequestException();
             }
