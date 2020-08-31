@@ -1,4 +1,4 @@
-package org.objectsNotPrimitives.expenseManager.servlet;
+package org.objectsNotPrimitives.expenseManager.utils;
 
 import org.springframework.beans.factory.annotation.Value;
 

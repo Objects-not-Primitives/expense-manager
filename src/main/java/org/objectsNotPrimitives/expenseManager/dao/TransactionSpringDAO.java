@@ -1,7 +1,8 @@
-package org.objectsNotPrimitives.expenseManager.servlet;
+package org.objectsNotPrimitives.expenseManager.dao;
 
 import org.objectsNotPrimitives.expenseManager.model.Transaction;
 import org.objectsNotPrimitives.expenseManager.model.TypesOfExpenses;
+import org.objectsNotPrimitives.expenseManager.utils.SpringPropertyLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;

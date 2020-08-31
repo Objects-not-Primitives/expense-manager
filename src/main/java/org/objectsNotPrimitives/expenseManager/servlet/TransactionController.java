@@ -3,6 +3,7 @@ package org.objectsNotPrimitives.expenseManager.servlet;
 import org.objectsNotPrimitives.expenseManager.exceptions.BadRequestException;
 import org.objectsNotPrimitives.expenseManager.exceptions.NotFoundException;
 import org.objectsNotPrimitives.expenseManager.model.Transaction;
+import org.objectsNotPrimitives.expenseManager.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

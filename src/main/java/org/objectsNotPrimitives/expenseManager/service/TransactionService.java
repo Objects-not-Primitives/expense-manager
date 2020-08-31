@@ -1,9 +1,9 @@
-package org.objectsNotPrimitives.expenseManager.servlet;
+package org.objectsNotPrimitives.expenseManager.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.objectsNotPrimitives.expenseManager.model.Transaction;
-import org.objectsNotPrimitives.expenseManager.service.SorterService;
+import org.objectsNotPrimitives.expenseManager.dao.TransactionSpringDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
