@@ -5,7 +5,7 @@ public enum TypesOfExpenses {
     ENTERTAINMENT("ENTERTAINMENT"),
     OTHER("OTHER");
 
-    private String type;
+    private final String type;
 
     TypesOfExpenses(String type) {
         this.type = type;

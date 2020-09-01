@@ -14,7 +14,7 @@ public class TransactionService {
     private static final ObjectMapper mapper = new ObjectMapper();
 
 
-    private TransactionSpringDAO transactionDAO;
+    private final TransactionSpringDAO transactionDAO;
     @Autowired
     public TransactionService(TransactionSpringDAO transactionDAO) {
         this.transactionDAO = transactionDAO;
