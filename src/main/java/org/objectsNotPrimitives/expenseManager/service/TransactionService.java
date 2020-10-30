@@ -4,18 +4,17 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.objectsNotPrimitives.expenseManager.model.Transaction;
 import org.objectsNotPrimitives.expenseManager.dao.TransactionSpringDAO;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.stream.Stream;
-@Component
+
+@Service
 public class TransactionService {
     private static final ObjectMapper mapper = new ObjectMapper();
 
-
     private final TransactionSpringDAO transactionDAO;
-    @Autowired
+
     public TransactionService(TransactionSpringDAO transactionDAO) {
         this.transactionDAO = transactionDAO;
     }
