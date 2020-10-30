@@ -7,6 +7,7 @@ import org.objectsNotPrimitives.expenseManager.utils.PropertyLoader;
 import org.objectsNotPrimitives.expenseManager.utils.ScriptExecutor;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import org.junit.*;
 import java.io.IOException;
 import java.sql.*;
 import java.util.List;
@@ -22,13 +23,8 @@ public class TestTransactionSpringDAO {
             "applicationContext.xml"
     );
 
-    public static void main(String[] args) throws IOException {
-        testConnect();
-        testDAO();
-    }
-
-    private static boolean testDAO() throws IOException {
-
+    @Test
+    public void testDAO() throws IOException {
         execScripts();
         TransactionSpringDAO transactionSpringDAO = context.getBean("transactionSpringDAO", TransactionSpringDAO.class);
         List<Transaction> testTransactionList = List.of(
@@ -50,14 +46,7 @@ public class TestTransactionSpringDAO {
                 .collect(Collectors.toList());
         testTransactionListOneType.addAll(testTransactionListOtherType);
         List<Transaction> summaryTransactionList = transactionSpringDAO.selectAll().collect(Collectors.toList());
-
-        if (testTransactionListOneType.containsAll(summaryTransactionList)) {
-            System.out.println("DAO methods test passed");
-            return true;
-        } else {
-            System.out.println("DAO methods test not passed");
-            return false;
-        }
+        Assert.assertTrue("DAO methods test passed", testTransactionListOneType.containsAll(summaryTransactionList));
 
     }
 
@@ -70,15 +59,8 @@ public class TestTransactionSpringDAO {
         scriptExecutor.executeSQL(initDBPath, properties);
     }
 
-    private static boolean testConnect() {
-        try {
-            TransactionSpringDAO transactionSpringDAO = context.getBean("transactionSpringDAO", TransactionSpringDAO.class);
-            System.out.println("Connected to the database");
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("There is no connection to the database");
-            return false;
-        }
+    @Test
+    public void testConnect() {
+        context.getBean("transactionSpringDAO", TransactionSpringDAO.class);
     }
 }

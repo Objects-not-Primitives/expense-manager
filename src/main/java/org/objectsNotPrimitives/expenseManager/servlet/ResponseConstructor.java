@@ -14,6 +14,7 @@ public class ResponseConstructor {
     private static final ObjectMapper mapper = new ObjectMapper();
 
     public ResponseConstructor() {
+
     }
 
     public String transactionToJson(Transaction transaction) {
